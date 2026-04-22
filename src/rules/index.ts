@@ -9,6 +9,7 @@ import { r08NoFocusedTest } from './r08-no-focused-test.js';
 import { r09NoHardcodedBaseUrl } from './r09-no-hardcoded-base-url.js';
 import { r10NoHardcodedTimeout } from './r10-no-hardcoded-timeout.js';
 import { r11NoConsoleInTest } from './r11-no-console-in-test.js';
+import { r12NoSkippedTest } from './r12-no-skipped-test.js';
 import type { RuleDefinition } from '../domain/rule.js';
 
 export const BUILT_IN_RULES: RuleDefinition[] = [
@@ -23,4 +24,5 @@ export const BUILT_IN_RULES: RuleDefinition[] = [
   r09NoHardcodedBaseUrl,
   r10NoHardcodedTimeout,
   r11NoConsoleInTest,
+  r12NoSkippedTest,
 ];
