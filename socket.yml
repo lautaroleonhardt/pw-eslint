@@ -1,0 +1,8 @@
+version: 2
+
+issueRules:
+  unmaintained: false
+  urlStrings: false
+  envVars: false
+  debugAccess: false
+  filesystemAccess: false
