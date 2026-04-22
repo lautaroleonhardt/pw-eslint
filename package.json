@@ -1,0 +1,62 @@
+{
+  "name": "@pw-eslint/cli",
+  "version": "0.1.0",
+  "description": "AST-based static analysis CLI for Playwright test files",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "pw-eslint": "dist/cli/index.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build && npm run typecheck",
+    "bench": "node bench/run.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lautaroleonhardt/pw-eslint.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "picomatch": "^4.0.0",
+    "tinyglobby": "^0.2.0",
+    "ts-morph": "^28.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/picomatch": "^3.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^4.1.5"
+  },
+  "packageManager": "pnpm@10.25.0+sha512.5e82639027af37cf832061bcc6d639c219634488e0f2baebe785028a793de7b525ffcd3f7ff574f5e9860654e098fe852ba8ac5dd5cefe1767d23a020a92f501",
+  "overrides": {
+    "picomatch": "^4.0.0",
+    "glob-parent": "^6.0.2",
+    "is-glob": "^4.0.3",
+    "is-extglob": "^2.1.1",
+    "ts-interface-checker": "^1.0.2"
+  }
+}
