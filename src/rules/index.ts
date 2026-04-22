@@ -10,6 +10,7 @@ import { r09NoHardcodedBaseUrl } from './r09-no-hardcoded-base-url.js';
 import { r10NoHardcodedTimeout } from './r10-no-hardcoded-timeout.js';
 import { r11NoConsoleInTest } from './r11-no-console-in-test.js';
 import { r12NoSkippedTest } from './r12-no-skipped-test.js';
+import { r13NoAssertionInPageObject } from './r13-no-assertion-in-page-object.js';
 import type { RuleDefinition } from '../domain/rule.js';
 
 export const BUILT_IN_RULES: RuleDefinition[] = [
@@ -25,4 +26,5 @@ export const BUILT_IN_RULES: RuleDefinition[] = [
   r10NoHardcodedTimeout,
   r11NoConsoleInTest,
   r12NoSkippedTest,
+  r13NoAssertionInPageObject,
 ];
