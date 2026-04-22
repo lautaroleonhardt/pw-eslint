@@ -1,0 +1,7 @@
+{
+  "include": ["tests/**/*.spec.ts"],
+  "rules": {
+    "no-hard-wait": "off",
+    "deep-locator": ["warn", { "maxDepth": 5 }]
+  }
+}
