@@ -6,6 +6,7 @@ import { r05WebFirstAssertion } from './r05-web-first-assertion.js';
 import { r06LeakyPageObject } from './r06-leaky-page-object.js';
 import { r07NoPagePause } from './r07-no-page-pause.js';
 import { r08NoFocusedTest } from './r08-no-focused-test.js';
+import { r09NoHardcodedBaseUrl } from './r09-no-hardcoded-base-url.js';
 import type { RuleDefinition } from '../domain/rule.js';
 
 export const BUILT_IN_RULES: RuleDefinition[] = [
@@ -17,4 +18,5 @@ export const BUILT_IN_RULES: RuleDefinition[] = [
   r06LeakyPageObject,
   r07NoPagePause,
   r08NoFocusedTest,
+  r09NoHardcodedBaseUrl,
 ];
