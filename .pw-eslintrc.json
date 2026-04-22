@@ -1,0 +1,6 @@
+{
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "dist"],
+  "specPattern": "**/*.spec.ts",
+  "pageObjectPattern": "**/*-page.ts"
+}
