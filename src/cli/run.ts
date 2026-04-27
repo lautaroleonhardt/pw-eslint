@@ -182,7 +182,7 @@ export async function runCli(options: CliOptions): Promise<void> {
   }
 
   const formatter = getFormatter(format as 'pretty' | 'json' | 'junit' | 'github');
-  const output = formatter.format(filteredFindings, noColor, diff) + '\n';
+  const output = formatter.format(filteredFindings, noColor, diff, activeRules.map(r => r.id)) + '\n';
 
   // --output-file: write to file; fall back to stdout
   if (options.outputFile) {
