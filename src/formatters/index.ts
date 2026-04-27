@@ -6,7 +6,7 @@ import type { Finding } from '../domain/finding.js';
 import type { DiffReport } from '../domain/diff.js';
 
 export interface Formatter {
-  format(findings: Finding[], noColor?: boolean, diff?: DiffReport): string;
+  format(findings: Finding[], noColor?: boolean, diff?: DiffReport, allRuleIds?: string[]): string;
 }
 
 export function getFormatter(format: 'pretty' | 'json' | 'junit' | 'github'): Formatter {
@@ -20,6 +20,6 @@ export function getFormatter(format: 'pretty' | 'json' | 'junit' | 'github'): Fo
     return { format: (findings) => formatGithub(findings) };
   }
   return {
-    format: (findings, noColor, diff) => formatPretty(findings, noColor, diff),
+    format: (findings, noColor, diff, allRuleIds) => formatPretty(findings, noColor, diff, allRuleIds),
   };
 }
