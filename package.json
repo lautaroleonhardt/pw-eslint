@@ -1,5 +1,5 @@
 {
-  "name": "@pw-eslint/cli",
+  "name": "pw-eslint",
   "version": "0.1.0",
   "description": "AST-based static analysis CLI for Playwright test files",
   "license": "MIT",
@@ -33,9 +33,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/lautaroleonhardt/pw-eslint.git"
-  },
-  "publishConfig": {
-    "access": "public"
   },
   "dependencies": {
     "chalk": "^5.3.0",

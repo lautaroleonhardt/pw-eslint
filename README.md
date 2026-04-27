@@ -2,7 +2,7 @@
 
 > AST-based static analysis CLI for Playwright test files and Page Object Models.
 
-[![npm version](https://img.shields.io/npm/v/@pw-eslint/cli)](https://www.npmjs.com/package/@pw-eslint/cli)
+[![npm version](https://img.shields.io/npm/v/pw-eslint)](https://www.npmjs.com/package/pw-eslint)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
@@ -10,7 +10,7 @@
 ## Installation
 
 ```bash
-npm install -g @pw-eslint/cli
+npm install -g pw-eslint
 ```
 
 ---
@@ -408,7 +408,7 @@ The `apiVersion` field guards against breaking changes. The current supported ve
 
 ## Security
 
-`@pw-eslint/cli` requires filesystem access to read configurations and analyze test files. If you're using this as a library and want to restrict access, see [SECURITY.md](SECURITY.md) for how to provide a custom `FileSystem` implementation.
+`pw-eslint` requires filesystem access to read configurations and analyze test files. If you're using this as a library and want to restrict access, see [SECURITY.md](SECURITY.md) for how to provide a custom `FileSystem` implementation.
 
 ## License
 

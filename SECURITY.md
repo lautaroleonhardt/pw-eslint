@@ -2,7 +2,7 @@
 
 ## Filesystem Access
 
-`@pw-eslint/cli` is a static analysis tool that requires filesystem access to read configuration files, Playwright test files, and baseline reports. 
+`pw-eslint` is a static analysis tool that requires filesystem access to read configuration files, Playwright test files, and baseline reports. 
 
 ### Why we need Filesystem Access
 
@@ -14,10 +14,10 @@
 
 ### Mitigations
 
-If you use `@pw-eslint/cli` as a library and want to restrict its filesystem access, you can provide a custom `FileSystem` implementation:
+If you use `pw-eslint` as a library and want to restrict its filesystem access, you can provide a custom `FileSystem` implementation:
 
 ```typescript
-import { loadConfig, NodeFileSystem, type FileSystem } from '@pw-eslint/cli';
+import { loadConfig, NodeFileSystem, type FileSystem } from 'pw-eslint';
 
 class RestrictedFileSystem extends NodeFileSystem {
   readFile(path: string): string {
