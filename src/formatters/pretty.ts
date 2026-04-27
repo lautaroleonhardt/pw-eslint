@@ -46,7 +46,7 @@ function formatSeverity(severity: Finding['severity']): string {
     : chalk.yellow('warn ');
 }
 
-export function formatPretty(findings: Finding[], noColor = false, diff?: DiffReport): string {
+export function formatPretty(findings: Finding[], noColor = false, diff?: DiffReport, allRuleIds: string[] = []): string {
   if (noColor) chalk.level = 0;
 
   const lines: string[] = [];
@@ -67,9 +67,9 @@ export function formatPretty(findings: Finding[], noColor = false, diff?: DiffRe
     }
   }
 
-  if (findings.length > 0) {
+  if (allRuleIds.length > 0) {
     lines.push('');
-    lines.push(buildSummaryTable(findings));
+    lines.push(buildSummaryTable(findings, allRuleIds));
   }
 
   lines.push('');
@@ -113,18 +113,18 @@ function buildDiffTable(diff: DiffReport, noColor: boolean): string {
   );
 }
 
-function buildSummaryTable(findings: Finding[]): string {
-  const ruleIds = [...new Set(findings.map((f) => f.ruleId))].sort();
+function buildSummaryTable(findings: Finding[], allRuleIds: string[]): string {
+  const ruleIds = [...new Set([...allRuleIds, ...findings.map(f => f.ruleId)])].sort();
   return formatTable(
     [chalk.bold('Rule'), chalk.bold('Errors'), chalk.bold('Warnings')],
     ruleIds.map(ruleId => {
-      const ruleFindings = findings.filter(f => f.ruleId === ruleId);
-      const errors = ruleFindings.filter(f => f.severity === 'error').length;
-      const warns = ruleFindings.filter(f => f.severity === 'warn').length;
+      const rf = findings.filter(f => f.ruleId === ruleId);
+      const errors = rf.filter(f => f.severity === 'error').length;
+      const warns  = rf.filter(f => f.severity === 'warn').length;
       return [
         ruleId,
         errors > 0 ? chalk.red(String(errors)) : chalk.dim('0'),
-        warns > 0 ? chalk.yellow(String(warns)) : chalk.dim('0'),
+        warns  > 0 ? chalk.yellow(String(warns)) : chalk.dim('0'),
       ];
     }),
   );

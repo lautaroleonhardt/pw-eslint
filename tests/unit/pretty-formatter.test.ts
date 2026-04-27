@@ -81,4 +81,50 @@ describe('pretty formatter', () => {
     expect(output).toContain('2 errors');
     expect(output).toContain('1 warning');
   });
+
+  it('shows rules with 0 findings in the summary table when allRuleIds provided', () => {
+    const output = formatPretty(sampleFindings, true, undefined, ['no-hard-wait', 'deep-locator', 'zombie-locator']);
+    expect(output).toContain('zombie-locator');
+  });
+
+  it('renders summary table even when findings is empty but allRuleIds provided', () => {
+    const output = formatPretty([], true, undefined, ['no-hard-wait']);
+    expect(output).toContain('no-hard-wait');
+    expect(output).toContain('No findings');
+  });
+
+  it('omits table when both findings and allRuleIds are empty', () => {
+    const output = formatPretty([], true);
+    expect(output).not.toContain('Rule');
+  });
+
+  it('sorts all rule rows alphabetically', () => {
+    const output = formatPretty(sampleFindings, true, undefined, ['zombie-locator', 'deep-locator', 'no-hard-wait']);
+    const tableStart = output.indexOf('┌');
+    const tableSection = output.slice(tableStart);
+    const deepLocatorPos = tableSection.indexOf('deep-locator');
+    const noHardWaitPos  = tableSection.indexOf('no-hard-wait');
+    const zombiePos      = tableSection.indexOf('zombie-locator');
+    expect(deepLocatorPos).toBeLessThan(noHardWaitPos);
+    expect(noHardWaitPos).toBeLessThan(zombiePos);
+  });
+
+  it('does not create duplicate rows for repeated ruleIds in allRuleIds', () => {
+    const output = formatPretty([], true, undefined, ['no-hard-wait', 'no-hard-wait']);
+    const count = (output.match(/no-hard-wait/g) ?? []).length;
+    expect(count).toBe(1);
+  });
+
+  it('shows correct counts for rules with findings alongside 0-count rules', () => {
+    const output = formatPretty(sampleFindings, true, undefined, ['no-hard-wait', 'deep-locator', 'zombie-locator']);
+    expect(output).toMatch(/no-hard-wait.*2/);   // no-hard-wait: 2 errors
+    expect(output).toMatch(/deep-locator.*1/);    // deep-locator: 1 warning
+    expect(output).toContain('zombie-locator');
+  });
+
+  it('shows rule row even when all its findings were filtered out by severity', () => {
+    const warnOnlyFindings = sampleFindings.filter(f => f.severity === 'warn');
+    const output = formatPretty(warnOnlyFindings, true, undefined, ['no-hard-wait', 'deep-locator']);
+    expect(output).toContain('no-hard-wait');
+  });
 });
