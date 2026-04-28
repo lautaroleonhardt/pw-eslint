@@ -17,7 +17,7 @@ describe('R06: leaky-page-object', () => {
     const findings = runRuleOnFixture(
       r06LeakyPageObject,
       `${fixtureDir}/r06-fires.spec.ts`,
-      specConfig,
+      specConfig
     );
     expect(findings.length).toBeGreaterThanOrEqual(4);
     findings.forEach((f) => {
@@ -30,7 +30,7 @@ describe('R06: leaky-page-object', () => {
     const findings = runRuleOnFixture(
       r06LeakyPageObject,
       `${fixtureDir}/r06-nofire.spec.ts`,
-      specConfig,
+      specConfig
     );
     expect(findings).toHaveLength(0);
   });

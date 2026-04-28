@@ -19,6 +19,8 @@ test.fixme('fixme test', async ({ page }) => {
 });
 
 test('expect in nested helper', async ({ page }) => {
-  const check = async () => { expect(await page.title()).toBe('Home'); };
+  const check = async () => {
+    expect(await page.title()).toBe('Home');
+  };
   await check();
 });

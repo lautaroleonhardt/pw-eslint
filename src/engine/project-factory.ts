@@ -24,11 +24,11 @@ class TsMorphFsAdapter implements FileSystemHost {
     return this.fs.exists(path);
   }
 
-  delete(path: string): Promise<void> {
+  delete(_path: string): Promise<void> {
     throw new Error('Delete not supported');
   }
 
-  deleteSync(path: string): void {
+  deleteSync(_path: string): void {
     throw new Error('Delete not supported');
   }
 
@@ -51,43 +51,45 @@ class TsMorphFsAdapter implements FileSystemHost {
     }
   }
 
-  readFileSync(filePath: string, encoding?: string): string {
+  readFileSync(filePath: string, _encoding?: string): string {
     return this.fs.readFile(filePath);
   }
 
-  async readFile(filePath: string, encoding?: string): Promise<string> {
-    return this.fs.readFile(filePath);
+  readFile(filePath: string, _encoding?: string): Promise<string> {
+    return Promise.resolve(this.fs.readFile(filePath));
   }
 
   writeFileSync(filePath: string, fileText: string): void {
     this.fs.writeFile(filePath, fileText);
   }
 
-  async writeFile(filePath: string, fileText: string): Promise<void> {
+  writeFile(filePath: string, fileText: string): Promise<void> {
     this.fs.writeFile(filePath, fileText);
+    return Promise.resolve();
   }
 
   mkdirSync(dirPath: string): void {
     this.fs.mkdir(dirPath, { recursive: true });
   }
 
-  async mkdir(dirPath: string): Promise<void> {
+  mkdir(dirPath: string): Promise<void> {
     this.fs.mkdir(dirPath, { recursive: true });
+    return Promise.resolve();
   }
 
-  move(srcPath: string, destPath: string): Promise<void> {
+  move(_srcPath: string, _destPath: string): Promise<void> {
     throw new Error('Move not supported');
   }
 
-  moveSync(srcPath: string, destPath: string): void {
+  moveSync(_srcPath: string, _destPath: string): void {
     throw new Error('Move not supported');
   }
 
-  copy(srcPath: string, destPath: string): Promise<void> {
+  copy(_srcPath: string, _destPath: string): Promise<void> {
     throw new Error('Copy not supported');
   }
 
-  copySync(srcPath: string, destPath: string): void {
+  copySync(_srcPath: string, _destPath: string): void {
     throw new Error('Copy not supported');
   }
 
@@ -145,7 +147,11 @@ class TsMorphFsAdapter implements FileSystemHost {
     const results: string[] = [];
     const walk = (dir: string): void => {
       let entries: string[];
-      try { entries = this.fs.readdir(dir); } catch { return; }
+      try {
+        entries = this.fs.readdir(dir);
+      } catch {
+        return;
+      }
       for (const name of entries) {
         const fullPath = join(dir, name);
         try {
@@ -156,7 +162,9 @@ class TsMorphFsAdapter implements FileSystemHost {
             const rel = relative(cwd, fullPath);
             if (isMatch(rel) && !isNegated(rel)) results.push(fullPath);
           }
-        } catch { /* skip unreadable entries */ }
+        } catch {
+          /* skip unreadable entries */
+        }
       }
     };
     walk(cwd);

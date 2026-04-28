@@ -3,19 +3,52 @@ import type { RuleDefinition } from '../domain/rule.js';
 
 const ASYNC_METHODS = new Set([
   // Navigation
-  'goto', 'reload', 'goBack', 'goForward', 'waitForURL', 'waitForNavigation',
+  'goto',
+  'reload',
+  'goBack',
+  'goForward',
+  'waitForURL',
+  'waitForNavigation',
   // Interaction
-  'click', 'dblclick', 'tap', 'fill', 'type', 'press', 'selectOption',
-  'check', 'uncheck', 'focus', 'blur', 'hover', 'dragTo', 'dispatchEvent',
-  'inputValue', 'selectText',
+  'click',
+  'dblclick',
+  'tap',
+  'fill',
+  'type',
+  'press',
+  'selectOption',
+  'check',
+  'uncheck',
+  'focus',
+  'blur',
+  'hover',
+  'dragTo',
+  'dispatchEvent',
+  'inputValue',
+  'selectText',
   // Waiting
-  'waitForSelector', 'waitForFunction', 'waitForEvent', 'waitForLoadState',
+  'waitForSelector',
+  'waitForFunction',
+  'waitForEvent',
+  'waitForLoadState',
   // State checks
-  'isVisible', 'isEnabled', 'isChecked', 'isDisabled', 'isEditable',
+  'isVisible',
+  'isEnabled',
+  'isChecked',
+  'isDisabled',
+  'isEditable',
   // Content
-  'innerHTML', 'innerText', 'textContent', 'getAttribute', 'count', 'boundingBox',
+  'innerHTML',
+  'innerText',
+  'textContent',
+  'getAttribute',
+  'count',
+  'boundingBox',
   // Other
-  'screenshot', 'setInputFiles', 'evaluate', 'evaluateHandle',
+  'screenshot',
+  'setInputFiles',
+  'evaluate',
+  'evaluateHandle',
   // Expect timeout options
   'expect',
 ]);
@@ -105,7 +138,7 @@ export const r10NoHardcodedTimeout: RuleDefinition = {
 
       context.report(
         value,
-        `Hardcoded timeout ${timeoutMs}ms; use a shared constant or playwright.config.ts instead`,
+        `Hardcoded timeout ${timeoutMs}ms; use a shared constant or playwright.config.ts instead`
       );
     });
   },

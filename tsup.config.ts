@@ -13,7 +13,7 @@ export default defineConfig({
   sourcemap: true,
   clean: true,
   splitting: false,
-  onSuccess: async () => {
+  onSuccess: () => {
     // Inject shebang into CLI entry only
     const cliPath = 'dist/cli/index.js';
     const content = readFileSync(cliPath, 'utf8');

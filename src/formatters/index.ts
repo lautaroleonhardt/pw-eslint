@@ -20,6 +20,7 @@ export function getFormatter(format: 'pretty' | 'json' | 'junit' | 'github'): Fo
     return { format: (findings) => formatGithub(findings) };
   }
   return {
-    format: (findings, noColor, diff, allRuleIds) => formatPretty(findings, noColor, diff, allRuleIds),
+    format: (findings, noColor, diff, allRuleIds) =>
+      formatPretty(findings, noColor, diff, allRuleIds),
   };
 }

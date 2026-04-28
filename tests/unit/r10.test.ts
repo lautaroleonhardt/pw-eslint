@@ -29,20 +29,16 @@ describe('R10: no-hardcoded-timeout', () => {
   });
 
   it('maxTimeout: 0 (default) fires on all hardcoded timeouts', () => {
-    const findings = runRuleOnFixture(
-      r10NoHardcodedTimeout,
-      `${fixtureDir}/r10-max-timeout.ts`,
-      { rules: { ...DEFAULT_CONFIG.rules, 'no-hardcoded-timeout': ['warn', { maxTimeout: 0 }] } },
-    );
+    const findings = runRuleOnFixture(r10NoHardcodedTimeout, `${fixtureDir}/r10-max-timeout.ts`, {
+      rules: { ...DEFAULT_CONFIG.rules, 'no-hardcoded-timeout': ['warn', { maxTimeout: 0 }] },
+    });
     expect(findings).toHaveLength(4);
   });
 
   it('maxTimeout: 5000 suppresses timeouts <= 5000ms', () => {
-    const findings = runRuleOnFixture(
-      r10NoHardcodedTimeout,
-      `${fixtureDir}/r10-max-timeout.ts`,
-      { rules: { ...DEFAULT_CONFIG.rules, 'no-hardcoded-timeout': ['warn', { maxTimeout: 5000 }] } },
-    );
+    const findings = runRuleOnFixture(r10NoHardcodedTimeout, `${fixtureDir}/r10-max-timeout.ts`, {
+      rules: { ...DEFAULT_CONFIG.rules, 'no-hardcoded-timeout': ['warn', { maxTimeout: 5000 }] },
+    });
     // 3000 and 1000 are suppressed; 30000 and 60000 still fire
     expect(findings).toHaveLength(2);
     findings.forEach((f) => {
@@ -52,20 +48,16 @@ describe('R10: no-hardcoded-timeout', () => {
   });
 
   it('maxTimeout: 60000 suppresses all timeouts in fixture', () => {
-    const findings = runRuleOnFixture(
-      r10NoHardcodedTimeout,
-      `${fixtureDir}/r10-max-timeout.ts`,
-      { rules: { ...DEFAULT_CONFIG.rules, 'no-hardcoded-timeout': ['warn', { maxTimeout: 60000 }] } },
-    );
+    const findings = runRuleOnFixture(r10NoHardcodedTimeout, `${fixtureDir}/r10-max-timeout.ts`, {
+      rules: { ...DEFAULT_CONFIG.rules, 'no-hardcoded-timeout': ['warn', { maxTimeout: 60000 }] },
+    });
     expect(findings).toHaveLength(0);
   });
 
   it('invalid maxTimeout (negative) falls back to default (flags all)', () => {
-    const findings = runRuleOnFixture(
-      r10NoHardcodedTimeout,
-      `${fixtureDir}/r10-max-timeout.ts`,
-      { rules: { ...DEFAULT_CONFIG.rules, 'no-hardcoded-timeout': ['warn', { maxTimeout: -1 }] } },
-    );
+    const findings = runRuleOnFixture(r10NoHardcodedTimeout, `${fixtureDir}/r10-max-timeout.ts`, {
+      rules: { ...DEFAULT_CONFIG.rules, 'no-hardcoded-timeout': ['warn', { maxTimeout: -1 }] },
+    });
     expect(findings).toHaveLength(4);
   });
 });

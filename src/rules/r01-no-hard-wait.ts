@@ -44,7 +44,7 @@ export const r01NoHardWait: RuleDefinition = {
         context.report(
           callExpr,
           'Avoid waitForTimeout() — it creates fragile, time-based waits.',
-          'Replace with a web-first mechanism: waitForSelector(), expect(locator).toBeVisible(), or waitForURL().',
+          'Replace with a web-first mechanism: waitForSelector(), expect(locator).toBeVisible(), or waitForURL().'
         );
       }
     });
@@ -80,7 +80,7 @@ export const r01NoHardWait: RuleDefinition = {
       const indent = leadingMatch ? leadingMatch[1] : '';
 
       ancestor.replaceWithText(
-        `${indent}/* TODO: replace waitForTimeout with a Playwright web-first waiting mechanism */`,
+        `${indent}/* TODO: replace waitForTimeout with a Playwright web-first waiting mechanism */`
       );
     }
   },

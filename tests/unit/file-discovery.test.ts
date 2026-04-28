@@ -17,8 +17,9 @@ describe('discoverFiles', () => {
   });
 
   it('throws FileNotFoundError when path does not exist', async () => {
-    await expect(discoverFiles(join(tmpDir, 'nope.ts'), DEFAULT_CONFIG))
-      .rejects.toThrow(FileNotFoundError);
+    await expect(discoverFiles(join(tmpDir, 'nope.ts'), DEFAULT_CONFIG)).rejects.toThrow(
+      FileNotFoundError
+    );
   });
 
   it('returns single file when target is a file', async () => {
@@ -71,6 +72,6 @@ describe('discoverFiles', () => {
 
     const result = await discoverFiles(tmpDir, config);
 
-    expect(result.every(p => p.startsWith('/'))).toBe(true);
+    expect(result.every((p) => p.startsWith('/'))).toBe(true);
   });
 });

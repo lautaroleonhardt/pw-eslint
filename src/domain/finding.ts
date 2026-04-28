@@ -5,8 +5,8 @@ export interface Finding {
   ruleId: string;
   severity: Severity;
   filePath: string;
-  line: number;     // 1-based
-  column: number;   // 1-based
+  line: number; // 1-based
+  column: number; // 1-based
   message: string;
   suggestion?: string;
   fixable: boolean;

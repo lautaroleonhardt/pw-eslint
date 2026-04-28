@@ -13,7 +13,9 @@ describe('R01: no-hard-wait fix', () => {
     const { text } = runFixOnFixture(r01NoHardWait, `${fixtureDir}/r01-fires.ts`);
     // No more waitForTimeout() calls — only the TODO comment remains (which mentions the name)
     expect(text).not.toMatch(/waitForTimeout\s*\(/);
-    expect(text).toContain('TODO: replace waitForTimeout with a Playwright web-first waiting mechanism');
+    expect(text).toContain(
+      'TODO: replace waitForTimeout with a Playwright web-first waiting mechanism'
+    );
   });
 
   it('all three waitForTimeout calls are fixed', () => {

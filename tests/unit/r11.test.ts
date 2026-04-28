@@ -7,11 +7,9 @@ const fixtureDir = resolve(import.meta.dirname, '../fixtures/r11');
 
 describe('R11: no-console-in-test', () => {
   it('fires on console.* calls in spec files', () => {
-    const findings = runRuleOnFixture(
-      r11NoConsoleInTest,
-      `${fixtureDir}/r11-fires.spec.ts`,
-      { specPattern: '**/*.spec.ts' },
-    );
+    const findings = runRuleOnFixture(r11NoConsoleInTest, `${fixtureDir}/r11-fires.spec.ts`, {
+      specPattern: '**/*.spec.ts',
+    });
     expect(findings.length).toBeGreaterThan(0);
     findings.forEach((f) => {
       expect(f.ruleId).toBe('no-console-in-test');
@@ -21,11 +19,9 @@ describe('R11: no-console-in-test', () => {
   });
 
   it('finds console calls at correct locations', () => {
-    const findings = runRuleOnFixture(
-      r11NoConsoleInTest,
-      `${fixtureDir}/r11-fires.spec.ts`,
-      { specPattern: '**/*.spec.ts' },
-    );
+    const findings = runRuleOnFixture(r11NoConsoleInTest, `${fixtureDir}/r11-fires.spec.ts`, {
+      specPattern: '**/*.spec.ts',
+    });
     // Verify we found console calls (exact line numbers may vary)
     expect(findings.length).toBeGreaterThanOrEqual(1);
     expect(findings.some((f) => f.message.includes('console.log'))).toBe(true);
@@ -33,11 +29,9 @@ describe('R11: no-console-in-test', () => {
   });
 
   it('does not fire on valid spec files without console', () => {
-    const findings = runRuleOnFixture(
-      r11NoConsoleInTest,
-      `${fixtureDir}/r11-nofire.spec.ts`,
-      { specPattern: '**/*.spec.ts' },
-    );
+    const findings = runRuleOnFixture(r11NoConsoleInTest, `${fixtureDir}/r11-nofire.spec.ts`, {
+      specPattern: '**/*.spec.ts',
+    });
     expect(findings).toHaveLength(0);
   });
 });

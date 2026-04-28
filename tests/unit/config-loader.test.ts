@@ -14,8 +14,10 @@ describe('loadConfig', () => {
         readFile: () => JSON.stringify({ rules: { 'no-hard-wait': 'error' } }),
         writeFile: () => {},
         mkdir: () => {},
-        stat: () => ({} as any),
-        lstat: () => ({} as any),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
+        stat: () => ({}) as any,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
+        lstat: () => ({}) as any,
         readdir: () => [],
         realpath: (p) => p,
       };
@@ -55,17 +57,21 @@ describe('loadConfig', () => {
 
   describe('schema validation', () => {
     it('throws ConfigValidationError on unknown top-level key', () => {
-      expect(() => loadConfig(process.cwd(), `${fixtureDir}/unknown-key.json`))
-        .toThrow(ConfigValidationError);
-      expect(() => loadConfig(process.cwd(), `${fixtureDir}/unknown-key.json`))
-        .toThrow('unknownOption');
+      expect(() => loadConfig(process.cwd(), `${fixtureDir}/unknown-key.json`)).toThrow(
+        ConfigValidationError
+      );
+      expect(() => loadConfig(process.cwd(), `${fixtureDir}/unknown-key.json`)).toThrow(
+        'unknownOption'
+      );
     });
 
     it('throws ConfigValidationError on invalid severity value', () => {
-      expect(() => loadConfig(process.cwd(), `${fixtureDir}/invalid-severity.json`))
-        .toThrow(ConfigValidationError);
-      expect(() => loadConfig(process.cwd(), `${fixtureDir}/invalid-severity.json`))
-        .toThrow('no-hard-wait');
+      expect(() => loadConfig(process.cwd(), `${fixtureDir}/invalid-severity.json`)).toThrow(
+        ConfigValidationError
+      );
+      expect(() => loadConfig(process.cwd(), `${fixtureDir}/invalid-severity.json`)).toThrow(
+        'no-hard-wait'
+      );
     });
   });
 
@@ -90,24 +96,28 @@ describe('loadConfig', () => {
     });
 
     it('throws ConfigValidationError on invalid failOn value', () => {
-      expect(() => loadConfig(process.cwd(), `${fixtureDir}/invalid-fail-on.json`))
-        .toThrow(ConfigValidationError);
-      expect(() => loadConfig(process.cwd(), `${fixtureDir}/invalid-fail-on.json`))
-        .toThrow('failOn');
+      expect(() => loadConfig(process.cwd(), `${fixtureDir}/invalid-fail-on.json`)).toThrow(
+        ConfigValidationError
+      );
+      expect(() => loadConfig(process.cwd(), `${fixtureDir}/invalid-fail-on.json`)).toThrow(
+        'failOn'
+      );
     });
   });
 
-    describe('maxWarnings config', () => {
+  describe('maxWarnings config', () => {
     it('parses maxWarnings: 5', () => {
       const config = loadConfig(process.cwd(), `${fixtureDir}/max-warnings.json`);
       expect(config.maxWarnings).toBe(5);
     });
 
     it('throws ConfigValidationError on negative maxWarnings', () => {
-      expect(() => loadConfig(process.cwd(), `${fixtureDir}/invalid-max-warnings.json`))
-        .toThrow(ConfigValidationError);
-      expect(() => loadConfig(process.cwd(), `${fixtureDir}/invalid-max-warnings.json`))
-        .toThrow('maxWarnings');
+      expect(() => loadConfig(process.cwd(), `${fixtureDir}/invalid-max-warnings.json`)).toThrow(
+        ConfigValidationError
+      );
+      expect(() => loadConfig(process.cwd(), `${fixtureDir}/invalid-max-warnings.json`)).toThrow(
+        'maxWarnings'
+      );
     });
   });
 
@@ -117,159 +127,192 @@ describe('loadConfig', () => {
       readFile: () => JSON.stringify(content),
       writeFile: () => {},
       mkdir: () => {},
-      stat: () => ({} as any),
-      lstat: () => ({} as any),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
+      stat: () => ({}) as any,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return
+      lstat: () => ({}) as any,
       readdir: () => [],
       realpath: (p) => p,
     });
 
     // Group A — specPattern
     it('throws ConfigValidationError when specPattern exceeds 1024 characters', () => {
-      expect(() => loadConfig(process.cwd(), undefined, mockFs({ specPattern: 'a'.repeat(1025) })))
-        .toThrow(ConfigValidationError);
-      expect(() => loadConfig(process.cwd(), undefined, mockFs({ specPattern: 'a'.repeat(1025) })))
-        .toThrow('specPattern');
+      expect(() =>
+        loadConfig(process.cwd(), undefined, mockFs({ specPattern: 'a'.repeat(1025) }))
+      ).toThrow(ConfigValidationError);
+      expect(() =>
+        loadConfig(process.cwd(), undefined, mockFs({ specPattern: 'a'.repeat(1025) }))
+      ).toThrow('specPattern');
     });
 
     it('throws ConfigValidationError when specPattern has brace nesting depth > 3', () => {
-      expect(() => loadConfig(process.cwd(), undefined, mockFs({ specPattern: '{{{{a}}}}' })))
-        .toThrow(ConfigValidationError);
-      expect(() => loadConfig(process.cwd(), undefined, mockFs({ specPattern: '{{{{a}}}}' })))
-        .toThrow('specPattern');
+      expect(() =>
+        loadConfig(process.cwd(), undefined, mockFs({ specPattern: '{{{{a}}}}' }))
+      ).toThrow(ConfigValidationError);
+      expect(() =>
+        loadConfig(process.cwd(), undefined, mockFs({ specPattern: '{{{{a}}}}' }))
+      ).toThrow('specPattern');
     });
 
     it('throws ConfigValidationError when specPattern has > 20 alternatives in one brace', () => {
       const pattern = '{a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u}';
-      expect(() => loadConfig(process.cwd(), undefined, mockFs({ specPattern: pattern })))
-        .toThrow(ConfigValidationError);
-      expect(() => loadConfig(process.cwd(), undefined, mockFs({ specPattern: pattern })))
-        .toThrow('specPattern');
+      expect(() => loadConfig(process.cwd(), undefined, mockFs({ specPattern: pattern }))).toThrow(
+        ConfigValidationError
+      );
+      expect(() => loadConfig(process.cwd(), undefined, mockFs({ specPattern: pattern }))).toThrow(
+        'specPattern'
+      );
     });
 
     it('throws ConfigValidationError when specPattern has unclosed brace', () => {
-      expect(() => loadConfig(process.cwd(), undefined, mockFs({ specPattern: 'src/{foo' })))
-        .toThrow(ConfigValidationError);
-      expect(() => loadConfig(process.cwd(), undefined, mockFs({ specPattern: 'src/{foo' })))
-        .toThrow('specPattern');
+      expect(() =>
+        loadConfig(process.cwd(), undefined, mockFs({ specPattern: 'src/{foo' }))
+      ).toThrow(ConfigValidationError);
+      expect(() =>
+        loadConfig(process.cwd(), undefined, mockFs({ specPattern: 'src/{foo' }))
+      ).toThrow('specPattern');
     });
 
     it('throws ConfigValidationError when specPattern has unmatched closing brace', () => {
-      expect(() => loadConfig(process.cwd(), undefined, mockFs({ specPattern: 'src/foo}bar' })))
-        .toThrow(ConfigValidationError);
+      expect(() =>
+        loadConfig(process.cwd(), undefined, mockFs({ specPattern: 'src/foo}bar' }))
+      ).toThrow(ConfigValidationError);
     });
 
     it('throws ConfigValidationError when specPattern has unclosed bracket', () => {
-      expect(() => loadConfig(process.cwd(), undefined, mockFs({ specPattern: 'src/[foo' })))
-        .toThrow(ConfigValidationError);
-      expect(() => loadConfig(process.cwd(), undefined, mockFs({ specPattern: 'src/[foo' })))
-        .toThrow('specPattern');
+      expect(() =>
+        loadConfig(process.cwd(), undefined, mockFs({ specPattern: 'src/[foo' }))
+      ).toThrow(ConfigValidationError);
+      expect(() =>
+        loadConfig(process.cwd(), undefined, mockFs({ specPattern: 'src/[foo' }))
+      ).toThrow('specPattern');
     });
 
     it('accepts valid specPattern **/*.spec.ts', () => {
-      expect(() => loadConfig(process.cwd(), undefined, mockFs({ specPattern: '**/*.spec.ts' })))
-        .not.toThrow();
+      expect(() =>
+        loadConfig(process.cwd(), undefined, mockFs({ specPattern: '**/*.spec.ts' }))
+      ).not.toThrow();
     });
 
     it('accepts specPattern with brace nesting at exactly depth 3', () => {
-      expect(() => loadConfig(process.cwd(), undefined, mockFs({ specPattern: '{a,{b,{c,d}}}' })))
-        .not.toThrow();
+      expect(() =>
+        loadConfig(process.cwd(), undefined, mockFs({ specPattern: '{a,{b,{c,d}}}' }))
+      ).not.toThrow();
     });
 
     it('accepts specPattern with exactly 20 alternatives', () => {
       const pattern = '{a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t}';
-      expect(() => loadConfig(process.cwd(), undefined, mockFs({ specPattern: pattern })))
-        .not.toThrow();
+      expect(() =>
+        loadConfig(process.cwd(), undefined, mockFs({ specPattern: pattern }))
+      ).not.toThrow();
     });
 
     it('accepts specPattern of exactly 1024 characters', () => {
-      expect(() => loadConfig(process.cwd(), undefined, mockFs({ specPattern: 'a'.repeat(1024) })))
-        .not.toThrow();
+      expect(() =>
+        loadConfig(process.cwd(), undefined, mockFs({ specPattern: 'a'.repeat(1024) }))
+      ).not.toThrow();
     });
 
     // Group B — pageObjectPattern
     it('throws ConfigValidationError when pageObjectPattern exceeds 1024 characters', () => {
-      expect(() => loadConfig(process.cwd(), undefined, mockFs({ pageObjectPattern: 'a'.repeat(1025) })))
-        .toThrow(ConfigValidationError);
-      expect(() => loadConfig(process.cwd(), undefined, mockFs({ pageObjectPattern: 'a'.repeat(1025) })))
-        .toThrow('pageObjectPattern');
+      expect(() =>
+        loadConfig(process.cwd(), undefined, mockFs({ pageObjectPattern: 'a'.repeat(1025) }))
+      ).toThrow(ConfigValidationError);
+      expect(() =>
+        loadConfig(process.cwd(), undefined, mockFs({ pageObjectPattern: 'a'.repeat(1025) }))
+      ).toThrow('pageObjectPattern');
     });
 
     it('throws ConfigValidationError when pageObjectPattern has brace nesting depth > 3', () => {
-      expect(() => loadConfig(process.cwd(), undefined, mockFs({ pageObjectPattern: '{{{{a}}}}' })))
-        .toThrow(ConfigValidationError);
+      expect(() =>
+        loadConfig(process.cwd(), undefined, mockFs({ pageObjectPattern: '{{{{a}}}}' }))
+      ).toThrow(ConfigValidationError);
     });
 
     it('throws ConfigValidationError when pageObjectPattern has > 20 alternatives in one brace', () => {
       const pattern = '{a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u}';
-      expect(() => loadConfig(process.cwd(), undefined, mockFs({ pageObjectPattern: pattern })))
-        .toThrow(ConfigValidationError);
+      expect(() =>
+        loadConfig(process.cwd(), undefined, mockFs({ pageObjectPattern: pattern }))
+      ).toThrow(ConfigValidationError);
     });
 
     it('throws ConfigValidationError when pageObjectPattern has unclosed brace', () => {
-      expect(() => loadConfig(process.cwd(), undefined, mockFs({ pageObjectPattern: 'pages/{foo' })))
-        .toThrow(ConfigValidationError);
-      expect(() => loadConfig(process.cwd(), undefined, mockFs({ pageObjectPattern: 'pages/{foo' })))
-        .toThrow('pageObjectPattern');
+      expect(() =>
+        loadConfig(process.cwd(), undefined, mockFs({ pageObjectPattern: 'pages/{foo' }))
+      ).toThrow(ConfigValidationError);
+      expect(() =>
+        loadConfig(process.cwd(), undefined, mockFs({ pageObjectPattern: 'pages/{foo' }))
+      ).toThrow('pageObjectPattern');
     });
 
     it('accepts valid pageObjectPattern pages/**/*.ts', () => {
-      expect(() => loadConfig(process.cwd(), undefined, mockFs({ pageObjectPattern: 'pages/**/*.ts' })))
-        .not.toThrow();
+      expect(() =>
+        loadConfig(process.cwd(), undefined, mockFs({ pageObjectPattern: 'pages/**/*.ts' }))
+      ).not.toThrow();
     });
 
     // Group C — overrides[].files
     it('throws ConfigValidationError (not silently skips) when overrides files pattern exceeds 1024 chars', () => {
-      const config = { overrides: [{ files: ['a'.repeat(1025)], rules: { 'no-hard-wait': 'off' } }] };
-      expect(() => loadConfig(process.cwd(), undefined, mockFs(config)))
-        .toThrow(ConfigValidationError);
+      const config = {
+        overrides: [{ files: ['a'.repeat(1025)], rules: { 'no-hard-wait': 'off' } }],
+      };
+      expect(() => loadConfig(process.cwd(), undefined, mockFs(config))).toThrow(
+        ConfigValidationError
+      );
     });
 
     it('throws ConfigValidationError when overrides files pattern has brace depth > 3', () => {
       const config = { overrides: [{ files: ['{{{{a}}}}'], rules: { 'no-hard-wait': 'off' } }] };
-      expect(() => loadConfig(process.cwd(), undefined, mockFs(config)))
-        .toThrow(ConfigValidationError);
+      expect(() => loadConfig(process.cwd(), undefined, mockFs(config))).toThrow(
+        ConfigValidationError
+      );
     });
 
     it('throws ConfigValidationError when overrides files pattern has > 20 alternatives', () => {
       const pattern = '{a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u}';
       const config = { overrides: [{ files: [pattern], rules: { 'no-hard-wait': 'off' } }] };
-      expect(() => loadConfig(process.cwd(), undefined, mockFs(config)))
-        .toThrow(ConfigValidationError);
+      expect(() => loadConfig(process.cwd(), undefined, mockFs(config))).toThrow(
+        ConfigValidationError
+      );
     });
 
     it('throws ConfigValidationError when overrides files pattern has unclosed brace', () => {
       const config = { overrides: [{ files: ['src/{foo'], rules: { 'no-hard-wait': 'off' } }] };
-      expect(() => loadConfig(process.cwd(), undefined, mockFs(config)))
-        .toThrow(ConfigValidationError);
+      expect(() => loadConfig(process.cwd(), undefined, mockFs(config))).toThrow(
+        ConfigValidationError
+      );
     });
 
     it('throws ConfigValidationError when overrides files pattern has unclosed bracket', () => {
       const config = { overrides: [{ files: ['src/[foo'], rules: { 'no-hard-wait': 'off' } }] };
-      expect(() => loadConfig(process.cwd(), undefined, mockFs(config)))
-        .toThrow(ConfigValidationError);
+      expect(() => loadConfig(process.cwd(), undefined, mockFs(config))).toThrow(
+        ConfigValidationError
+      );
     });
 
     it('accepts a valid overrides entry with normal glob patterns', () => {
-      const config = { overrides: [{ files: ['tests/**/*.spec.ts'], rules: { 'no-hard-wait': 'off' } }] };
-      expect(() => loadConfig(process.cwd(), undefined, mockFs(config)))
-        .not.toThrow();
+      const config = {
+        overrides: [{ files: ['tests/**/*.spec.ts'], rules: { 'no-hard-wait': 'off' } }],
+      };
+      expect(() => loadConfig(process.cwd(), undefined, mockFs(config))).not.toThrow();
     });
 
     // Group D — edge cases
     it('accepts depth-3 nested braces with 20 alternatives', () => {
       const pattern = '{a,{b,{c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t}}}';
-      expect(() => loadConfig(process.cwd(), undefined, mockFs({ specPattern: pattern })))
-        .not.toThrow();
+      expect(() =>
+        loadConfig(process.cwd(), undefined, mockFs({ specPattern: pattern }))
+      ).not.toThrow();
     });
 
     it('does not treat escaped bracket as unclosed', () => {
-      expect(() => loadConfig(process.cwd(), undefined, mockFs({ specPattern: 'src/\\[foo\\]' })))
-        .not.toThrow();
+      expect(() =>
+        loadConfig(process.cwd(), undefined, mockFs({ specPattern: 'src/\\[foo\\]' }))
+      ).not.toThrow();
     });
 
     it('accepts empty string pattern', () => {
-      expect(() => loadConfig(process.cwd(), undefined, mockFs({ specPattern: '' })))
-        .not.toThrow();
+      expect(() => loadConfig(process.cwd(), undefined, mockFs({ specPattern: '' }))).not.toThrow();
     });
   });
 });

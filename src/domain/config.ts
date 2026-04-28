@@ -44,4 +44,3 @@ export const DEFAULT_CONFIG: ResolvedConfig = {
   pageObjectPattern: 'pages/**/*.ts',
   specPattern: '**/*.spec.ts',
 };
-

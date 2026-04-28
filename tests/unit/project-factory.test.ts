@@ -24,7 +24,7 @@ describe('createProject', () => {
   it('uses tsconfig.json when found in target directory', () => {
     writeFileSync(
       join(tmpDir, 'tsconfig.json'),
-      JSON.stringify({ compilerOptions: { strict: true } }),
+      JSON.stringify({ compilerOptions: { strict: true } })
     );
 
     const project = createProject(tmpDir);
@@ -36,7 +36,7 @@ describe('createProject', () => {
     mkdirSync(childDir, { recursive: true });
     writeFileSync(
       join(tmpDir, 'tsconfig.json'),
-      JSON.stringify({ compilerOptions: { strict: true } }),
+      JSON.stringify({ compilerOptions: { strict: true } })
     );
 
     const project = createProject(childDir);
@@ -46,16 +46,16 @@ describe('createProject', () => {
   it('creates synthetic project when no tsconfig.json exists', () => {
     const project = createProject(tmpDir);
     expect(project).toBeDefined();
-    const sf = project.createSourceFile(
-      join(tmpDir, 'test.ts'),
-      'const x: number = 1;',
-    );
+    const sf = project.createSourceFile(join(tmpDir, 'test.ts'), 'const x: number = 1;');
     expect(sf.getFullText()).toContain('const x');
   });
 
   it('can parse TypeScript files after creation', () => {
     const filePath = join(tmpDir, 'sample.spec.ts');
-    writeFileSync(filePath, 'import { test } from "@playwright/test";\ntest("demo", async () => {});');
+    writeFileSync(
+      filePath,
+      'import { test } from "@playwright/test";\ntest("demo", async () => {});'
+    );
 
     const project = createProject(tmpDir);
     const sf = project.addSourceFileAtPath(filePath);

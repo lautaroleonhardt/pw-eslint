@@ -1,7 +1,11 @@
 import { resolve, dirname } from 'node:path';
 import { loadConfig, ConfigValidationError } from '../infrastructure/config-loader.js';
 import { defaultFS } from '../infrastructure/fs.js';
-import { loadCustomRules, PluginLoadError, PluginApiVersionError } from '../infrastructure/plugin-loader.js';
+import {
+  loadCustomRules,
+  PluginLoadError,
+  PluginApiVersionError,
+} from '../infrastructure/plugin-loader.js';
 import { discoverFiles, FileNotFoundError } from '../engine/file-discovery.js';
 import { getStagedFiles, NotAGitRepoError } from '../infrastructure/staged-files.js';
 import { loadBaseline, BaselineLoadError } from '../infrastructure/baseline-loader.js';
@@ -108,7 +112,13 @@ export async function runCli(options: CliOptions): Promise<void> {
   const allRules = [...BUILT_IN_RULES, ...customRules];
 
   // Validate --category values
-  const VALID_CATEGORIES = new Set(['flakiness', 'hygiene', 'style', 'correctness', 'uncategorized']);
+  const VALID_CATEGORIES = new Set([
+    'flakiness',
+    'hygiene',
+    'style',
+    'correctness',
+    'uncategorized',
+  ]);
   const categoryFilter = options.category?.length
     ? options.category
     : config.categoryFilter.length
@@ -117,7 +127,9 @@ export async function runCli(options: CliOptions): Promise<void> {
 
   for (const cat of categoryFilter) {
     if (!VALID_CATEGORIES.has(cat)) {
-      process.stderr.write(`[pw-eslint] Category not found: "${cat}". Valid categories: ${[...VALID_CATEGORIES].join(', ')}\n`);
+      process.stderr.write(
+        `[pw-eslint] Category not found: "${cat}". Valid categories: ${[...VALID_CATEGORIES].join(', ')}\n`
+      );
       process.exit(1);
     }
   }
@@ -129,7 +141,9 @@ export async function runCli(options: CliOptions): Promise<void> {
 
   const activeRules = allRules.filter((r) => {
     const matchesRule = hasRuleFilter ? options.rule!.includes(r.id) : false;
-    const matchesCategory = hasCategoryFilter ? categorySet.has(r.category ?? 'uncategorized') : false;
+    const matchesCategory = hasCategoryFilter
+      ? categorySet.has(r.category ?? 'uncategorized')
+      : false;
 
     if (hasRuleFilter && hasCategoryFilter) return matchesRule || matchesCategory; // union
     if (hasRuleFilter) return matchesRule;
@@ -154,9 +168,7 @@ export async function runCli(options: CliOptions): Promise<void> {
   }
 
   // Resolve effective severity filter: --quiet wins over --severity
-  const severityFilter: Severity | undefined = options.quiet
-    ? 'error'
-    : options.severity;
+  const severityFilter: Severity | undefined = options.quiet ? 'error' : options.severity;
 
   const filteredFindings = severityFilter
     ? findings.filter((f) => f.severity === severityFilter)
@@ -166,7 +178,9 @@ export async function runCli(options: CliOptions): Promise<void> {
   let diff: DiffReport | undefined;
   if (options.compare) {
     if (format === 'junit') {
-      process.stderr.write('[pw-eslint] --compare is not supported with --format junit. Diff metadata will be omitted.\n');
+      process.stderr.write(
+        '[pw-eslint] --compare is not supported with --format junit. Diff metadata will be omitted.\n'
+      );
     }
     let baseline;
     try {
@@ -182,7 +196,13 @@ export async function runCli(options: CliOptions): Promise<void> {
   }
 
   const formatter = getFormatter(format as 'pretty' | 'json' | 'junit' | 'github');
-  const output = formatter.format(filteredFindings, noColor, diff, activeRules.map(r => r.id)) + '\n';
+  const output =
+    formatter.format(
+      filteredFindings,
+      noColor,
+      diff,
+      activeRules.map((r) => r.id)
+    ) + '\n';
 
   // --output-file: write to file; fall back to stdout
   if (options.outputFile) {
@@ -191,7 +211,9 @@ export async function runCli(options: CliOptions): Promise<void> {
       defaultFS.mkdir(dirname(absOutputFile), { recursive: true });
       defaultFS.writeFile(absOutputFile, output);
     } catch (err) {
-      process.stderr.write(`[pw-eslint] Failed to write output file: ${err instanceof Error ? err.message : String(err)}\n`);
+      process.stderr.write(
+        `[pw-eslint] Failed to write output file: ${err instanceof Error ? err.message : String(err)}\n`
+      );
       process.exit(2);
     }
   } else {
@@ -207,9 +229,8 @@ export async function runCli(options: CliOptions): Promise<void> {
   if (diff) {
     // --compare mode: exit based on new violations only
     const failOn = config.failOn;
-    const newViolationsExist = failOn === 'warn'
-      ? diff.new.length > 0
-      : diff.new.some((f) => f.severity === 'error');
+    const newViolationsExist =
+      failOn === 'warn' ? diff.new.length > 0 : diff.new.some((f) => f.severity === 'error');
     if (newViolationsExist || exceedsMaxWarnings) {
       process.exit(1);
     }
@@ -220,9 +241,7 @@ export async function runCli(options: CliOptions): Promise<void> {
 
   // failOn: 'warn' means any finding triggers exit 1
   const failOn = config.failOn;
-  const hasFailOnViolation = failOn === 'warn'
-    ? filteredFindings.length > 0
-    : errorCount > 0;
+  const hasFailOnViolation = failOn === 'warn' ? filteredFindings.length > 0 : errorCount > 0;
 
   if (hasFailOnViolation || exceedsMaxWarnings) {
     process.exit(1);

@@ -16,11 +16,21 @@ function captureInit(options: Parameters<typeof runInit>[0]): {
 
   const origStdout = process.stdout.write.bind(process.stdout);
   const origStderr = process.stderr.write.bind(process.stderr);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
   const origExit = process.exit;
 
-  (process.stdout.write as unknown) = (s: string) => { stdoutChunks.push(s); return true; };
-  (process.stderr.write as unknown) = (s: string) => { stderrChunks.push(s); return true; };
-  (process.exit as unknown) = (code?: number) => { exitCode = code ?? 0; throw new Error(`__exit_${code}`); };
+  (process.stdout.write as unknown) = (s: string) => {
+    stdoutChunks.push(s);
+    return true;
+  };
+  (process.stderr.write as unknown) = (s: string) => {
+    stderrChunks.push(s);
+    return true;
+  };
+  (process.exit as unknown) = (code?: number) => {
+    exitCode = code ?? 0;
+    throw new Error(`__exit_${code}`);
+  };
 
   try {
     runInit(options);

@@ -21,9 +21,20 @@ function countCssCombinators(selector: string): number {
   while (i < selector.length) {
     const ch = selector[i]!;
 
-    if (ch === '[' || ch === '(') { nesting++; i++; continue; }
-    if (ch === ']' || ch === ')') { nesting = Math.max(0, nesting - 1); i++; continue; }
-    if (nesting > 0) { i++; continue; }
+    if (ch === '[' || ch === '(') {
+      nesting++;
+      i++;
+      continue;
+    }
+    if (ch === ']' || ch === ')') {
+      nesting = Math.max(0, nesting - 1);
+      i++;
+      continue;
+    }
+    if (nesting > 0) {
+      i++;
+      continue;
+    }
 
     // Explicit combinators
     if (ch === '>' || ch === '+' || ch === '~') {
@@ -103,17 +114,14 @@ export const r02DeepLocator: RuleDefinition = {
   check(context) {
     const { sourceFile, config } = context;
     const ruleEntry = config.rules['deep-locator'];
-    const options: RuleOptions =
-      Array.isArray(ruleEntry) && ruleEntry[1] ? ruleEntry[1] : {};
+    const options: RuleOptions = Array.isArray(ruleEntry) && ruleEntry[1] ? ruleEntry[1] : {};
     const maxDepth = getMaxDepth(options);
 
     sourceFile.getDescendantsOfKind(SyntaxKind.CallExpression).forEach((callExpr) => {
       const callee = callExpr.getExpression();
       if (callee.getKind() !== SyntaxKind.PropertyAccessExpression) return;
 
-      const methodName = callee
-        .asKindOrThrow(SyntaxKind.PropertyAccessExpression)
-        .getName();
+      const methodName = callee.asKindOrThrow(SyntaxKind.PropertyAccessExpression).getName();
       if (!TARGET_METHODS.has(methodName)) return;
 
       const args = callExpr.getArguments();
@@ -126,7 +134,7 @@ export const r02DeepLocator: RuleDefinition = {
         context.report(
           firstArg,
           'Dynamic selector cannot be statically analyzed.',
-          'Use a string literal selector to enable depth analysis.',
+          'Use a string literal selector to enable depth analysis.'
         );
         return;
       }
@@ -143,7 +151,7 @@ export const r02DeepLocator: RuleDefinition = {
         context.report(
           firstArg,
           `Selector depth (${depth}) exceeds maxDepth (${maxDepth}).`,
-          'Simplify your selector or use semantic locators like getByRole(), getByLabel(), or getByTestId().',
+          'Simplify your selector or use semantic locators like getByRole(), getByLabel(), or getByTestId().'
         );
       }
     });

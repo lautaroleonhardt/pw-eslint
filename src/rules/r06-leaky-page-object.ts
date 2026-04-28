@@ -7,15 +7,19 @@ import type { RuleDefinition } from '../domain/rule.js';
  * Collect all node positions in the file where a variable named 'page' is declared,
  * to distinguish declaration nodes from usage nodes.
  */
-function getPageDeclarationStarts(sourceFile: ReturnType<typeof import('ts-morph').Project.prototype.getSourceFile>): Set<number> {
+function getPageDeclarationStarts(
+  sourceFile: ReturnType<typeof import('ts-morph').Project.prototype.getSourceFile>
+): Set<number> {
   if (!sourceFile) return new Set();
   const starts = new Set<number>();
 
   // ParameterDeclaration with name 'page' (simple name)
   sourceFile.getDescendantsOfKind(SyntaxKind.Parameter).forEach((param) => {
     const nameNode = param.getNameNode();
-    if (nameNode.getKind() === SyntaxKind.Identifier &&
-        nameNode.asKindOrThrow(SyntaxKind.Identifier).getText() === 'page') {
+    if (
+      nameNode.getKind() === SyntaxKind.Identifier &&
+      nameNode.asKindOrThrow(SyntaxKind.Identifier).getText() === 'page'
+    ) {
       starts.add(param.getStart());
     }
   });
@@ -23,8 +27,10 @@ function getPageDeclarationStarts(sourceFile: ReturnType<typeof import('ts-morph
   // ObjectBindingPattern: find BindingElement named 'page' (Playwright fixture { page })
   sourceFile.getDescendantsOfKind(SyntaxKind.BindingElement).forEach((el) => {
     const nameNode = el.getNameNode();
-    if (nameNode.getKind() === SyntaxKind.Identifier &&
-        nameNode.asKindOrThrow(SyntaxKind.Identifier).getText() === 'page') {
+    if (
+      nameNode.getKind() === SyntaxKind.Identifier &&
+      nameNode.asKindOrThrow(SyntaxKind.Identifier).getText() === 'page'
+    ) {
       starts.add(el.getStart());
     }
   });
@@ -32,8 +38,10 @@ function getPageDeclarationStarts(sourceFile: ReturnType<typeof import('ts-morph
   // VariableDeclaration with name 'page'
   sourceFile.getDescendantsOfKind(SyntaxKind.VariableDeclaration).forEach((decl) => {
     const nameNode = decl.getNameNode();
-    if (nameNode.getKind() === SyntaxKind.Identifier &&
-        nameNode.asKindOrThrow(SyntaxKind.Identifier).getText() === 'page') {
+    if (
+      nameNode.getKind() === SyntaxKind.Identifier &&
+      nameNode.asKindOrThrow(SyntaxKind.Identifier).getText() === 'page'
+    ) {
       starts.add(decl.getStart());
     }
   });
@@ -44,7 +52,8 @@ function getPageDeclarationStarts(sourceFile: ReturnType<typeof import('ts-morph
 export const r06LeakyPageObject: RuleDefinition = {
   apiVersion: 1,
   id: 'leaky-page-object',
-  description: 'Warns when spec files access the Playwright page object directly instead of via Page Objects.',
+  description:
+    'Warns when spec files access the Playwright page object directly instead of via Page Objects.',
   defaultSeverity: 'warn',
   fixable: false,
   category: 'hygiene',
@@ -69,9 +78,10 @@ export const r06LeakyPageObject: RuleDefinition = {
     // Compute path relative to the project root (cwd) for glob matching
     const relPath = relative(process.cwd(), filePath).replace(/\\/g, '/');
 
-    const isSpec = picomatch.isMatch(relPath, config.specPattern) ||
-                   picomatch.isMatch(relPath, '**/*.spec.ts') ||
-                   picomatch.isMatch(relPath, '**/*.spec.js');
+    const isSpec =
+      picomatch.isMatch(relPath, config.specPattern) ||
+      picomatch.isMatch(relPath, '**/*.spec.ts') ||
+      picomatch.isMatch(relPath, '**/*.spec.js');
     const isPageObject = picomatch.isMatch(relPath, config.pageObjectPattern);
 
     if (!isSpec || isPageObject) return;
@@ -91,8 +101,11 @@ export const r06LeakyPageObject: RuleDefinition = {
       let ancestor = prop.getParent();
       while (ancestor) {
         if (ancestor.getKind() === SyntaxKind.NewExpression) return;
-        if (ancestor.getKind() === SyntaxKind.ExpressionStatement ||
-            ancestor.getKind() === SyntaxKind.VariableDeclaration) break;
+        if (
+          ancestor.getKind() === SyntaxKind.ExpressionStatement ||
+          ancestor.getKind() === SyntaxKind.VariableDeclaration
+        )
+          break;
         ancestor = ancestor.getParent();
       }
 
@@ -102,7 +115,7 @@ export const r06LeakyPageObject: RuleDefinition = {
       context.report(
         prop,
         `Direct \`page\` access in spec file. Use a Page Object to encapsulate page interactions.`,
-        `Create or use a Page Object class that accepts \`page\` in its constructor.`,
+        `Create or use a Page Object class that accepts \`page\` in its constructor.`
       );
     });
   },

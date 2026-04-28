@@ -79,9 +79,8 @@ function formatRuleList(rules: RuleDefinition[], useColor: boolean): string {
     const id = yellow(rule.id.padEnd(COL_WIDTHS.id), useColor);
     const cat = category.padEnd(COL_WIDTHS.category);
     const sev = rule.defaultSeverity.padEnd(COL_WIDTHS.severity);
-    const desc = rule.description.length > 60
-      ? rule.description.slice(0, 57) + '...'
-      : rule.description;
+    const desc =
+      rule.description.length > 60 ? rule.description.slice(0, 57) + '...' : rule.description;
     lines.push(`${id}${cat}${sev}${desc}`);
   }
 
@@ -91,7 +90,7 @@ function formatRuleList(rules: RuleDefinition[], useColor: boolean): string {
 export function runExplain(
   ruleIdOrList: string,
   allRules: RuleDefinition[],
-  options: ExplainOptions = {},
+  options: ExplainOptions = {}
 ): void {
   const useColor = options.color !== false;
 

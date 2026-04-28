@@ -78,9 +78,9 @@ export const r04ZombieLocator: RuleDefinition = {
       if (propertyNodes.size === 0) continue;
 
       // Collect all spec file texts for whole-word token search
-      const specFiles = project.getSourceFiles().filter((sf) =>
-        picomatch.isMatch(sf.getFilePath(), config.specPattern),
-      );
+      const specFiles = project
+        .getSourceFiles()
+        .filter((sf) => picomatch.isMatch(sf.getFilePath(), config.specPattern));
 
       const specTexts = specFiles.map((sf) => sf.getFullText());
 
@@ -92,7 +92,7 @@ export const r04ZombieLocator: RuleDefinition = {
           context.report(
             node,
             `Zombie locator: "${name}" is never referenced in any spec file.`,
-            `Remove or use this locator in a test. If intentional, consider renaming to clarify purpose.`,
+            `Remove or use this locator in a test. If intentional, consider renaming to clarify purpose.`
           );
         }
       }

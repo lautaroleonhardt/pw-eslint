@@ -39,7 +39,10 @@ describe('RuleRunner', () => {
 
   it('returns findings for violating files', () => {
     const file = join(tmpDir, 'bad.spec.ts');
-    writeFileSync(file, 'import { test } from "@playwright/test";\ntest("wait", async ({ page }) => { await page.waitForTimeout(5000); });');
+    writeFileSync(
+      file,
+      'import { test } from "@playwright/test";\ntest("wait", async ({ page }) => { await page.waitForTimeout(5000); });'
+    );
     const project = makeProject();
     project.addSourceFileAtPath(file);
     const runner = new RuleRunner([r01NoHardWait], DEFAULT_CONFIG);
@@ -50,17 +53,20 @@ describe('RuleRunner', () => {
 
   it('runs multiple rules on same file', () => {
     const file = join(tmpDir, 'multi.spec.ts');
-    writeFileSync(file, `
+    writeFileSync(
+      file,
+      `
 import { test, expect } from "@playwright/test";
 test("multi", async ({ page }) => {
   await page.waitForTimeout(1000);
   expect(await page.locator('.x').isVisible()).toBe(true);
-});`);
+});`
+    );
     const project = makeProject();
     project.addSourceFileAtPath(file);
     const runner = new RuleRunner([r01NoHardWait, r05WebFirstAssertion], DEFAULT_CONFIG);
     const { findings } = runner.run([file], project);
-    const ruleIds = findings.map(f => f.ruleId);
+    const ruleIds = findings.map((f) => f.ruleId);
     expect(ruleIds).toContain('no-hard-wait');
     expect(ruleIds).toContain('web-first-assertion');
   });
@@ -68,20 +74,29 @@ test("multi", async ({ page }) => {
   it('runs rules on multiple files', () => {
     const file1 = join(tmpDir, 'a.spec.ts');
     const file2 = join(tmpDir, 'b.spec.ts');
-    writeFileSync(file1, 'import { test } from "@playwright/test";\ntest("a", async ({ page }) => { await page.waitForTimeout(1000); });');
-    writeFileSync(file2, 'import { test } from "@playwright/test";\ntest("b", async ({ page }) => { await page.waitForTimeout(2000); });');
+    writeFileSync(
+      file1,
+      'import { test } from "@playwright/test";\ntest("a", async ({ page }) => { await page.waitForTimeout(1000); });'
+    );
+    writeFileSync(
+      file2,
+      'import { test } from "@playwright/test";\ntest("b", async ({ page }) => { await page.waitForTimeout(2000); });'
+    );
     const project = makeProject();
     project.addSourceFileAtPath(file1);
     project.addSourceFileAtPath(file2);
     const runner = new RuleRunner([r01NoHardWait], DEFAULT_CONFIG);
     const { findings } = runner.run([file1, file2], project);
-    const files = [...new Set(findings.map(f => f.filePath))];
+    const files = [...new Set(findings.map((f) => f.filePath))];
     expect(files).toHaveLength(2);
   });
 
   it('respects rule severity "off" in config', () => {
     const file = join(tmpDir, 'off.spec.ts');
-    writeFileSync(file, 'import { test } from "@playwright/test";\ntest("off", async ({ page }) => { await page.waitForTimeout(1000); });');
+    writeFileSync(
+      file,
+      'import { test } from "@playwright/test";\ntest("off", async ({ page }) => { await page.waitForTimeout(1000); });'
+    );
     const project = makeProject();
     project.addSourceFileAtPath(file);
     const config = {
@@ -95,7 +110,10 @@ test("multi", async ({ page }) => {
 
   it('produces diffs in dry-run mode', () => {
     const file = join(tmpDir, 'fix.spec.ts');
-    writeFileSync(file, 'import { test } from "@playwright/test";\ntest("fix", async ({ page }) => { await page.waitForTimeout(1000); });');
+    writeFileSync(
+      file,
+      'import { test } from "@playwright/test";\ntest("fix", async ({ page }) => { await page.waitForTimeout(1000); });'
+    );
     const project = makeProject();
     project.addSourceFileAtPath(file);
     const runner = new RuleRunner([r01NoHardWait], DEFAULT_CONFIG, 'dry-run');
@@ -123,7 +141,9 @@ test("multi", async ({ page }) => {
       description: 'Always throws',
       defaultSeverity: 'error',
       fixable: false,
-      check: () => { throw new Error('rule crashed'); },
+      check: () => {
+        throw new Error('rule crashed');
+      },
     };
     const runner = new RuleRunner([brokenRule], DEFAULT_CONFIG);
     const { findings } = runner.run([file], project);

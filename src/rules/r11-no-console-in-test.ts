@@ -22,7 +22,7 @@ export const r11NoConsoleInTest: RuleDefinition = {
     ],
     fixGuidance:
       'Remove console.* calls from test files. ' +
-      'For diagnostic output, use Playwright\'s built-in test.info().annotations or playwright reporter instead.',
+      "For diagnostic output, use Playwright's built-in test.info().annotations or playwright reporter instead.",
   },
 
   check(context) {
@@ -31,9 +31,10 @@ export const r11NoConsoleInTest: RuleDefinition = {
 
     // File-scope filtering: only run in spec files
     const relPath = relative(process.cwd(), filePath).replace(/\\/g, '/');
-    const isSpec = picomatch.isMatch(relPath, config.specPattern) ||
-                   picomatch.isMatch(relPath, '**/*.spec.ts') ||
-                   picomatch.isMatch(relPath, '**/*.spec.js');
+    const isSpec =
+      picomatch.isMatch(relPath, config.specPattern) ||
+      picomatch.isMatch(relPath, '**/*.spec.ts') ||
+      picomatch.isMatch(relPath, '**/*.spec.js');
 
     if (!isSpec) return;
 
@@ -55,7 +56,7 @@ export const r11NoConsoleInTest: RuleDefinition = {
 
       context.report(
         callExpr,
-        `console.${methodName}() left in test file; remove before committing`,
+        `console.${methodName}() left in test file; remove before committing`
       );
     });
   },

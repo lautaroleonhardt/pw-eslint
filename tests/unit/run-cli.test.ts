@@ -17,76 +17,91 @@ const mockCreateProject = vi.fn();
 const mockRunnerRun = vi.fn<(...args: unknown[]) => { findings: Finding[]; diffs: string[] }>();
 
 vi.mock('../../src/infrastructure/config-loader.js', async (importOriginal) => {
-  const orig = await importOriginal() as Record<string, unknown>;
-  return {
-    ...orig,
-    loadConfig: (...args: unknown[]) => mockLoadConfig(...args),
-  };
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+  const orig = (await importOriginal()) as Record<string, unknown>;
+  return { ...orig, loadConfig: (...args: unknown[]) => mockLoadConfig(...args) };
 });
 
 vi.mock('../../src/engine/file-discovery.js', async (importOriginal) => {
-  const orig = await importOriginal() as Record<string, unknown>;
-  return {
-    ...orig,
-    discoverFiles: (...args: unknown[]) => mockDiscoverFiles(...args),
-  };
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+  const orig = (await importOriginal()) as Record<string, unknown>;
+  return { ...orig, discoverFiles: (...args: unknown[]) => mockDiscoverFiles(...args) };
 });
 
 vi.mock('../../src/infrastructure/plugin-loader.js', async (importOriginal) => {
-  const orig = await importOriginal() as Record<string, unknown>;
-  return {
-    ...orig,
-    loadCustomRules: (...args: unknown[]) => mockLoadCustomRules(...args),
-  };
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+  const orig = (await importOriginal()) as Record<string, unknown>;
+  return { ...orig, loadCustomRules: (...args: unknown[]) => mockLoadCustomRules(...args) };
 });
 
 vi.mock('../../src/infrastructure/staged-files.js', async (importOriginal) => {
-  const orig = await importOriginal() as Record<string, unknown>;
-  return {
-    ...orig,
-    getStagedFiles: (...args: unknown[]) => mockGetStagedFiles(...args),
-  };
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+  const orig = (await importOriginal()) as Record<string, unknown>;
+  return { ...orig, getStagedFiles: (...args: unknown[]) => mockGetStagedFiles(...args) };
 });
 
 vi.mock('../../src/infrastructure/baseline-loader.js', async (importOriginal) => {
-  const orig = await importOriginal() as Record<string, unknown>;
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+  const orig = (await importOriginal()) as Record<string, unknown>;
   return {
     ...orig,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     loadBaseline: (...args: unknown[]) => mockLoadBaseline(...args),
   };
 });
 
 vi.mock('../../src/engine/baseline-comparator.js', () => ({
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   compareFindings: (...args: unknown[]) => mockCompareFindings(...args),
 }));
 
 vi.mock('../../src/engine/project-factory.js', () => ({
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   createProject: (...args: unknown[]) => mockCreateProject(...args),
 }));
 
 vi.mock('../../src/engine/runner.js', () => ({
   RuleRunner: class {
-    run(...args: unknown[]) { return mockRunnerRun(...args); }
+    run(...args: unknown[]) {
+      return mockRunnerRun(...args);
+    }
   },
 }));
 
 vi.mock('../../src/rules/index.js', () => ({
   BUILT_IN_RULES: [
-    { id: 'no-hard-wait', description: 'test', defaultSeverity: 'error', fixable: false, category: 'flakiness', check: () => [] },
-    { id: 'deep-locator', description: 'test', defaultSeverity: 'warn', fixable: false, category: 'hygiene', check: () => [] },
+    {
+      id: 'no-hard-wait',
+      description: 'test',
+      defaultSeverity: 'error',
+      fixable: false,
+      category: 'flakiness',
+      check: () => [],
+    },
+    {
+      id: 'deep-locator',
+      description: 'test',
+      defaultSeverity: 'warn',
+      fixable: false,
+      category: 'hygiene',
+      check: () => [],
+    },
   ],
 }));
 
 vi.mock('../../src/formatters/index.js', () => ({
   getFormatter: () => ({
-    format: (findings: Finding[]) => findings.length > 0 ? `Found ${findings.length} issue(s)` : 'No issues',
+    format: (findings: Finding[]) =>
+      findings.length > 0 ? `Found ${findings.length} issue(s)` : 'No issues',
   }),
 }));
 
 // ── ExitError (thrown by mocked process.exit to halt execution) ────────────
 
 class ExitError extends Error {
-  constructor(public code?: number) { super(`process.exit(${code})`); }
+  constructor(public code?: number) {
+    super(`process.exit(${code})`);
+  }
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -131,7 +146,9 @@ describe('runCli', () => {
   let tmpDir: string;
 
   beforeEach(() => {
-    exitSpy = vi.spyOn(process, 'exit').mockImplementation(((code?: number) => { throw new ExitError(code); }) as never);
+    exitSpy = vi.spyOn(process, 'exit').mockImplementation(((code?: number) => {
+      throw new ExitError(code);
+    }) as never);
     stdoutSpy = vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
     stderrSpy = vi.spyOn(process.stderr, 'write').mockImplementation(() => true);
     tmpDir = mkdtempSync(join(tmpdir(), 'pw-eslint-cli-'));
@@ -176,27 +193,25 @@ describe('runCli', () => {
     mockDiscoverFiles.mockResolvedValue([]);
     await run();
     expect(exitSpy).toHaveBeenCalledWith(0);
-    expect(stderrSpy).toHaveBeenCalledWith(
-      expect.stringContaining('No files matched'),
-    );
+    expect(stderrSpy).toHaveBeenCalledWith(expect.stringContaining('No files matched'));
   });
 
   it('exits 2 when --fix and --dry-run together', async () => {
     await run({ fix: true, dryRun: true });
     expect(exitSpy).toHaveBeenCalledWith(2);
     expect(stderrSpy).toHaveBeenCalledWith(
-      expect.stringContaining('--fix and --dry-run cannot be used together'),
+      expect.stringContaining('--fix and --dry-run cannot be used together')
     );
   });
 
   it('exits 2 for invalid config', async () => {
     const { ConfigValidationError } = await import('../../src/infrastructure/config-loader.js');
-    mockLoadConfig.mockImplementation(() => { throw new ConfigValidationError('bad config'); });
+    mockLoadConfig.mockImplementation(() => {
+      throw new ConfigValidationError('bad config');
+    });
     await run();
     expect(exitSpy).toHaveBeenCalledWith(2);
-    expect(stderrSpy).toHaveBeenCalledWith(
-      expect.stringContaining('Config error'),
-    );
+    expect(stderrSpy).toHaveBeenCalledWith(expect.stringContaining('Config error'));
   });
 
   it('filters by --rule flag', async () => {
@@ -231,18 +246,14 @@ describe('runCli', () => {
   it('exits 1 for invalid --category', async () => {
     await run({ category: ['nonexistent-category'] });
     expect(exitSpy).toHaveBeenCalledWith(1);
-    expect(stderrSpy).toHaveBeenCalledWith(
-      expect.stringContaining('Category not found'),
-    );
+    expect(stderrSpy).toHaveBeenCalledWith(expect.stringContaining('Category not found'));
   });
 
   it('exits 0 for --dry-run with no diffs', async () => {
     mockRunnerRun.mockReturnValue({ findings: [], diffs: [] });
     await run({ dryRun: true });
     expect(exitSpy).toHaveBeenCalledWith(0);
-    expect(stdoutSpy).toHaveBeenCalledWith(
-      expect.stringContaining('No fixes to apply'),
-    );
+    expect(stdoutSpy).toHaveBeenCalledWith(expect.stringContaining('No fixes to apply'));
   });
 
   it('exits 0 for --dry-run with diffs', async () => {

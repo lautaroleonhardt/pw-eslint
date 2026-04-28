@@ -19,7 +19,7 @@ function makeProject(): Project {
 export function runRuleOnFixture(
   rule: RuleDefinition,
   fixturePath: string,
-  configOverride: Partial<ResolvedConfig> = {},
+  configOverride: Partial<ResolvedConfig> = {}
 ): Finding[] {
   const project = makeProject();
   project.addSourceFileAtPath(fixturePath);
@@ -33,7 +33,7 @@ export function runFixOnFixture(
   rule: RuleDefinition,
   fixturePath: string,
   additionalFilePaths: string[] = [],
-  configOverride: Partial<ResolvedConfig> = {},
+  configOverride: Partial<ResolvedConfig> = {}
 ): { text: string; findings: Finding[] } {
   const project = makeProject();
   project.addSourceFileAtPath(fixturePath);
@@ -52,7 +52,7 @@ export function runFixOnFixture(
 export function runRulesOnFixtures(
   rules: RuleDefinition[],
   filePaths: string[],
-  configOverride: Partial<ResolvedConfig> = {},
+  configOverride: Partial<ResolvedConfig> = {}
 ): Finding[] {
   const project = makeProject();
   for (const p of filePaths) {

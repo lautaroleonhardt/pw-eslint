@@ -15,7 +15,7 @@ describe('R14: no-test-without-assertion', () => {
     const findings = runRuleOnFixture(
       r14NoTestWithoutAssertion,
       `${fixtureDir}/r14-fires.ts`,
-      specConfig,
+      specConfig
     );
     expect(findings).toHaveLength(3);
     findings.forEach((f) => {
@@ -28,17 +28,15 @@ describe('R14: no-test-without-assertion', () => {
     const findings = runRuleOnFixture(
       r14NoTestWithoutAssertion,
       `${fixtureDir}/r14-nofire.ts`,
-      specConfig,
+      specConfig
     );
     expect(findings).toHaveLength(0);
   });
 
   it('does not fire when file does not match specPattern (scope gate)', () => {
-    const findings = runRuleOnFixture(
-      r14NoTestWithoutAssertion,
-      `${fixtureDir}/r14-fires.ts`,
-      { specPattern: '**/*.spec.ts' },
-    );
+    const findings = runRuleOnFixture(r14NoTestWithoutAssertion, `${fixtureDir}/r14-fires.ts`, {
+      specPattern: '**/*.spec.ts',
+    });
     expect(findings).toHaveLength(0);
   });
 });

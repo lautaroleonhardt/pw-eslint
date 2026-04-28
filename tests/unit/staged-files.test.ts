@@ -17,7 +17,7 @@ beforeEach(() => {
 
 describe('getStagedFiles', () => {
   it('returns absolute paths of staged files', () => {
-    mockExecSync.mockReturnValue('src/tests/foo.spec.ts\nsrc/tests/bar.spec.ts\n' as unknown as Buffer);
+    mockExecSync.mockReturnValue('src/tests/foo.spec.ts\nsrc/tests/bar.spec.ts\n');
     const cwd = '/project';
     const files = getStagedFiles(cwd);
     expect(files).toEqual([
@@ -27,13 +27,13 @@ describe('getStagedFiles', () => {
   });
 
   it('returns empty array when no files are staged', () => {
-    mockExecSync.mockReturnValue('' as unknown as Buffer);
+    mockExecSync.mockReturnValue('');
     const files = getStagedFiles('/project');
     expect(files).toEqual([]);
   });
 
   it('filters empty lines', () => {
-    mockExecSync.mockReturnValue('\nfoo.spec.ts\n\n' as unknown as Buffer);
+    mockExecSync.mockReturnValue('\nfoo.spec.ts\n\n');
     const files = getStagedFiles('/project');
     expect(files).toHaveLength(1);
   });
@@ -53,11 +53,11 @@ describe('getStagedFiles', () => {
   });
 
   it('calls git diff --name-only --cached', () => {
-    mockExecSync.mockReturnValue('' as unknown as Buffer);
+    mockExecSync.mockReturnValue('');
     getStagedFiles('/project');
     expect(mockExecSync).toHaveBeenCalledWith(
       'git diff --name-only --cached',
-      expect.objectContaining({ encoding: 'utf-8' }),
+      expect.objectContaining({ encoding: 'utf-8' })
     );
   });
 });

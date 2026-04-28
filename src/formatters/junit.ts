@@ -29,7 +29,7 @@ export function formatJunit(findings: Finding[]): string {
   for (const [filePath, fileFindings] of grouped) {
     const failureCount = fileFindings.filter((f) => f.severity === 'error').length;
     lines.push(
-      `  <testsuite name="${escapeXml(filePath)}" tests="${fileFindings.length}" failures="${failureCount}">`,
+      `  <testsuite name="${escapeXml(filePath)}" tests="${fileFindings.length}" failures="${failureCount}">`
     );
 
     for (const f of fileFindings) {
@@ -41,7 +41,7 @@ export function formatJunit(findings: Finding[]): string {
         const msgAttr = escapeXml(f.message);
         const body = f.suggestion ? escapeXml(f.suggestion) : '';
         lines.push(
-          `      <failure message="${msgAttr}" type="${escapeXml(f.ruleId)}">${body}</failure>`,
+          `      <failure message="${msgAttr}" type="${escapeXml(f.ruleId)}">${body}</failure>`
         );
       }
 

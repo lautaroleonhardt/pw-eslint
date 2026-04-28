@@ -2,14 +2,15 @@ import chalk from 'chalk';
 import type { Finding } from '../domain/finding.js';
 import type { DiffReport } from '../domain/diff.js';
 
+// eslint-disable-next-line no-control-regex
 const stripAnsi = (s: string): string => s.replace(/\x1B\[[0-9;]*m/g, '');
 
 function formatTable(headers: string[], rows: string[][]): string {
   const all = [headers, ...rows];
-  const widths = headers.map((_, i) => Math.max(...all.map(r => stripAnsi(r[i] ?? '').length)));
+  const widths = headers.map((_, i) => Math.max(...all.map((r) => stripAnsi(r[i] ?? '').length)));
   const pad = (s: string, w: number) => s + ' '.repeat(w - stripAnsi(s).length);
   const hr = (l: string, m: string, r: string) =>
-    l + widths.map(w => '─'.repeat(w + 2)).join(m) + r;
+    l + widths.map((w) => '─'.repeat(w + 2)).join(m) + r;
   const fmtRow = (cells: string[]) =>
     '│ ' + cells.map((c, i) => pad(c, widths[i] ?? 0)).join(' │ ') + ' │';
   return [
@@ -35,18 +36,19 @@ function groupByFile(findings: Finding[]): Map<string, Finding[]> {
 }
 
 function sortFindings(findings: Finding[]): Finding[] {
-  return [...findings].sort((a, b) =>
-    a.line !== b.line ? a.line - b.line : a.column - b.column,
-  );
+  return [...findings].sort((a, b) => (a.line !== b.line ? a.line - b.line : a.column - b.column));
 }
 
 function formatSeverity(severity: Finding['severity']): string {
-  return severity === 'error'
-    ? chalk.red('error')
-    : chalk.yellow('warn ');
+  return severity === 'error' ? chalk.red('error') : chalk.yellow('warn ');
 }
 
-export function formatPretty(findings: Finding[], noColor = false, diff?: DiffReport, allRuleIds: string[] = []): string {
+export function formatPretty(
+  findings: Finding[],
+  noColor = false,
+  diff?: DiffReport,
+  allRuleIds: string[] = []
+): string {
   if (noColor) chalk.level = 0;
 
   const lines: string[] = [];
@@ -81,7 +83,8 @@ export function formatPretty(findings: Finding[], noColor = false, diff?: DiffRe
   } else {
     const parts: string[] = [];
     if (errorCount > 0) parts.push(chalk.red(`${errorCount} error${errorCount !== 1 ? 's' : ''}`));
-    if (warnCount > 0) parts.push(chalk.yellow(`${warnCount} warning${warnCount !== 1 ? 's' : ''}`));
+    if (warnCount > 0)
+      parts.push(chalk.yellow(`${warnCount} warning${warnCount !== 1 ? 's' : ''}`));
     lines.push(parts.join(', '));
   }
 
@@ -108,24 +111,29 @@ function buildDiffTable(diff: DiffReport, noColor: boolean): string {
       ['Errors', String(baseline.errors), String(current.errors), fmtDelta(delta.errors)],
       ['Warnings', String(baseline.warnings), String(current.warnings), fmtDelta(delta.warnings)],
       ['Fixed', '-', String(diff.fixed.length), chalk.green(String(diff.fixed.length))],
-      ['New', '-', String(diff.new.length), diff.new.length > 0 ? chalk.red(String(diff.new.length)) : chalk.dim('0')],
-    ],
+      [
+        'New',
+        '-',
+        String(diff.new.length),
+        diff.new.length > 0 ? chalk.red(String(diff.new.length)) : chalk.dim('0'),
+      ],
+    ]
   );
 }
 
 function buildSummaryTable(findings: Finding[], allRuleIds: string[]): string {
-  const ruleIds = [...new Set([...allRuleIds, ...findings.map(f => f.ruleId)])].sort();
+  const ruleIds = [...new Set([...allRuleIds, ...findings.map((f) => f.ruleId)])].sort();
   return formatTable(
     [chalk.bold('Rule'), chalk.bold('Errors'), chalk.bold('Warnings')],
-    ruleIds.map(ruleId => {
-      const rf = findings.filter(f => f.ruleId === ruleId);
-      const errors = rf.filter(f => f.severity === 'error').length;
-      const warns  = rf.filter(f => f.severity === 'warn').length;
+    ruleIds.map((ruleId) => {
+      const rf = findings.filter((f) => f.ruleId === ruleId);
+      const errors = rf.filter((f) => f.severity === 'error').length;
+      const warns = rf.filter((f) => f.severity === 'warn').length;
       return [
         ruleId,
         errors > 0 ? chalk.red(String(errors)) : chalk.dim('0'),
-        warns  > 0 ? chalk.yellow(String(warns)) : chalk.dim('0'),
+        warns > 0 ? chalk.yellow(String(warns)) : chalk.dim('0'),
       ];
-    }),
+    })
   );
 }

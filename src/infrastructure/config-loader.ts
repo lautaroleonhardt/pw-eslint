@@ -1,5 +1,10 @@
 import { dirname, join } from 'node:path';
-import { DEFAULT_CONFIG, type ResolvedConfig, type RuleEntry, type OverrideEntry } from '../domain/config.js';
+import {
+  DEFAULT_CONFIG,
+  type ResolvedConfig,
+  type RuleEntry,
+  type OverrideEntry,
+} from '../domain/config.js';
 import { defaultFS, type FileSystem } from './fs.js';
 
 export class ConfigValidationError extends Error {
@@ -26,7 +31,7 @@ const VALID_SEVERITIES = new Set(['error', 'warn', 'off']);
 function validateGlobPattern(pattern: string, fieldName: string): void {
   if (pattern.length > 1024) {
     throw new ConfigValidationError(
-      `"${fieldName}" glob pattern exceeds maximum length of 1024 characters.`,
+      `"${fieldName}" glob pattern exceeds maximum length of 1024 characters.`
     );
   }
 
@@ -34,24 +39,25 @@ function validateGlobPattern(pattern: string, fieldName: string): void {
   let depth = 0;
   let maxDepth = 0;
   for (const ch of pattern) {
-    if (ch === '{') { maxDepth = Math.max(maxDepth, ++depth); }
-    else if (ch === '}') {
+    if (ch === '{') {
+      maxDepth = Math.max(maxDepth, ++depth);
+    } else if (ch === '}') {
       depth--;
       if (depth < 0) {
         throw new ConfigValidationError(
-          `"${fieldName}" glob pattern has an unmatched closing brace '}'.`,
+          `"${fieldName}" glob pattern has an unmatched closing brace '}'.`
         );
       }
     }
   }
   if (depth !== 0) {
     throw new ConfigValidationError(
-      `"${fieldName}" glob pattern has ${depth} unclosed brace(s) '{'.`,
+      `"${fieldName}" glob pattern has ${depth} unclosed brace(s) '{'.`
     );
   }
   if (maxDepth > 3) {
     throw new ConfigValidationError(
-      `"${fieldName}" glob pattern has brace nesting depth ${maxDepth} (max 3). Deeply nested braces cause exponential expansion.`,
+      `"${fieldName}" glob pattern has brace nesting depth ${maxDepth} (max 3). Deeply nested braces cause exponential expansion.`
     );
   }
 
@@ -68,7 +74,7 @@ function validateGlobPattern(pattern: string, fieldName: string): void {
         const alternatives = group.commaCount + 1;
         if (alternatives > 20) {
           throw new ConfigValidationError(
-            `"${fieldName}" glob pattern has a brace expression with ${alternatives} alternatives (max 20).`,
+            `"${fieldName}" glob pattern has a brace expression with ${alternatives} alternatives (max 20).`
           );
         }
       }
@@ -85,14 +91,18 @@ function validateGlobPattern(pattern: string, fieldName: string): void {
   let inBracket = false;
   for (let i = 0; i < pattern.length; i++) {
     const ch = pattern[i];
-    if (ch === '\\') { i++; continue; }
-    if (ch === '[' && !inBracket) { inBracket = true; }
-    else if (ch === ']' && inBracket) { inBracket = false; }
+    if (ch === '\\') {
+      i++;
+      continue;
+    }
+    if (ch === '[' && !inBracket) {
+      inBracket = true;
+    } else if (ch === ']' && inBracket) {
+      inBracket = false;
+    }
   }
   if (inBracket) {
-    throw new ConfigValidationError(
-      `"${fieldName}" glob pattern has an unclosed bracket '['.`,
-    );
+    throw new ConfigValidationError(`"${fieldName}" glob pattern has an unclosed bracket '['.`);
   }
 }
 
@@ -100,7 +110,7 @@ function validateConfig(raw: Record<string, unknown>): void {
   for (const key of Object.keys(raw)) {
     if (!VALID_TOP_LEVEL_KEYS.has(key)) {
       throw new ConfigValidationError(
-        `Unknown config key: "${key}". Valid keys are: ${[...VALID_TOP_LEVEL_KEYS].join(', ')}.`,
+        `Unknown config key: "${key}". Valid keys are: ${[...VALID_TOP_LEVEL_KEYS].join(', ')}.`
       );
     }
   }
@@ -149,7 +159,8 @@ function validateConfig(raw: Record<string, unknown>): void {
   if (raw['failOn'] !== undefined) {
     if (raw['failOn'] !== 'error' && raw['failOn'] !== 'warn') {
       throw new ConfigValidationError(
-        `Invalid "failOn" value: "${raw['failOn']}". Must be "error" or "warn".`,
+        // eslint-disable-next-line @typescript-eslint/no-base-to-string
+        `Invalid "failOn" value: "${String(raw['failOn'])}". Must be "error" or "warn".`
       );
     }
   }
@@ -157,9 +168,7 @@ function validateConfig(raw: Record<string, unknown>): void {
   if (raw['maxWarnings'] !== undefined) {
     const n = raw['maxWarnings'];
     if (typeof n !== 'number' || !Number.isInteger(n) || n < 0) {
-      throw new ConfigValidationError(
-        '"maxWarnings" must be a non-negative integer.',
-      );
+      throw new ConfigValidationError('"maxWarnings" must be a non-negative integer.');
     }
   }
 
@@ -173,17 +182,24 @@ function validateConfig(raw: Record<string, unknown>): void {
         throw new ConfigValidationError(`"overrides[${i}]" must be an object.`);
       }
       const obj = entry as Record<string, unknown>;
-      if (!Array.isArray(obj['files']) || !(obj['files'] as unknown[]).every((v) => typeof v === 'string')) {
+      if (
+        !Array.isArray(obj['files']) ||
+        !(obj['files'] as unknown[]).every((v) => typeof v === 'string')
+      ) {
         throw new ConfigValidationError(`"overrides[${i}].files" must be an array of strings.`);
       }
-      if (typeof obj['rules'] !== 'object' || obj['rules'] === null || Array.isArray(obj['rules'])) {
+      if (
+        typeof obj['rules'] !== 'object' ||
+        obj['rules'] === null ||
+        Array.isArray(obj['rules'])
+      ) {
         throw new ConfigValidationError(`"overrides[${i}].rules" must be an object.`);
       }
       const overrideRules = obj['rules'] as Record<string, unknown>;
       for (const [ruleId, sev] of Object.entries(overrideRules)) {
         if (!VALID_SEVERITIES.has(sev as string)) {
           throw new ConfigValidationError(
-            `Invalid severity for override rule "${ruleId}" in overrides[${i}]: "${sev}". Must be "error", "warn", or "off".`,
+            `Invalid severity for override rule "${ruleId}" in overrides[${i}]: "${String(sev)}". Must be "error", "warn", or "off".`
           );
         }
       }
@@ -199,23 +215,26 @@ function validateConfig(raw: Record<string, unknown>): void {
       if (typeof entry === 'string') {
         if (!VALID_SEVERITIES.has(entry)) {
           throw new ConfigValidationError(
-            `Invalid severity for rule "${ruleId}": "${entry}". Must be "error", "warn", or "off".`,
+            `Invalid severity for rule "${ruleId}": "${entry}". Must be "error", "warn", or "off".`
           );
         }
       } else if (Array.isArray(entry)) {
         if (entry.length < 1 || !VALID_SEVERITIES.has(entry[0] as string)) {
           throw new ConfigValidationError(
-            `Invalid severity tuple for rule "${ruleId}": first element must be "error", "warn", or "off".`,
+            `Invalid severity tuple for rule "${ruleId}": first element must be "error", "warn", or "off".`
           );
         }
-        if (entry.length > 1 && (typeof entry[1] !== 'object' || entry[1] === null || Array.isArray(entry[1]))) {
+        if (
+          entry.length > 1 &&
+          (typeof entry[1] !== 'object' || entry[1] === null || Array.isArray(entry[1]))
+        ) {
           throw new ConfigValidationError(
-            `Invalid options for rule "${ruleId}": second element of tuple must be an object.`,
+            `Invalid options for rule "${ruleId}": second element of tuple must be an object.`
           );
         }
       } else {
         throw new ConfigValidationError(
-          `Invalid entry for rule "${ruleId}": must be a severity string or [severity, options] tuple.`,
+          `Invalid entry for rule "${ruleId}": must be a severity string or [severity, options] tuple.`
         );
       }
     }
@@ -256,10 +275,16 @@ function stripJsoncComments(text: string): string {
         result += sc;
         if (sc === '\\') {
           i++;
-          if (i < len) { result += text[i]!; i++; }
+          if (i < len) {
+            result += text[i]!;
+            i++;
+          }
           continue;
         }
-        if (sc === '"') { i++; break; }
+        if (sc === '"') {
+          i++;
+          break;
+        }
         i++;
       }
       continue;
@@ -286,7 +311,11 @@ function stripJsoncComments(text: string): string {
   return result;
 }
 
-export function loadConfig(cwd: string, explicitPath?: string, fs: FileSystem = defaultFS): ResolvedConfig {
+export function loadConfig(
+  cwd: string,
+  explicitPath?: string,
+  fs: FileSystem = defaultFS
+): ResolvedConfig {
   const configPath = explicitPath ?? findConfigFile(cwd, fs);
   if (!configPath) return DEFAULT_CONFIG;
 
@@ -296,7 +325,7 @@ export function loadConfig(cwd: string, explicitPath?: string, fs: FileSystem = 
     raw = JSON.parse(stripJsoncComments(text)) as Record<string, unknown>;
   } catch (err) {
     throw new ConfigValidationError(
-      `Failed to parse config file at "${configPath}": ${err instanceof Error ? err.message : String(err)}`,
+      `Failed to parse config file at "${configPath}": ${err instanceof Error ? err.message : String(err)}`
     );
   }
 
@@ -309,7 +338,9 @@ export function loadConfig(cwd: string, explicitPath?: string, fs: FileSystem = 
   };
 
   // Parse overrides: validate glob patterns and warn/skip invalid ones
-  const rawOverrides = raw['overrides'] as Array<{ files: string[]; rules: Record<string, string> }> | undefined;
+  const rawOverrides = raw['overrides'] as
+    | Array<{ files: string[]; rules: Record<string, string> }>
+    | undefined;
   let overrides: OverrideEntry[] | undefined;
   if (rawOverrides) {
     overrides = [];
@@ -322,7 +353,9 @@ export function loadConfig(cwd: string, explicitPath?: string, fs: FileSystem = 
           validFiles.push(pattern);
         } catch (err) {
           if (err instanceof ConfigValidationError) throw err;
-          process.stderr.write(`[pw-eslint] Invalid glob pattern in overrides, skipping: "${pattern}"\n`);
+          process.stderr.write(
+            `[pw-eslint] Invalid glob pattern in overrides, skipping: "${pattern}"\n`
+          );
         }
       }
       if (validFiles.length > 0) {
@@ -335,11 +368,13 @@ export function loadConfig(cwd: string, explicitPath?: string, fs: FileSystem = 
     include: (raw['include'] as string[] | undefined) ?? DEFAULT_CONFIG.include,
     exclude: (raw['exclude'] as string[] | undefined) ?? DEFAULT_CONFIG.exclude,
     rules: mergedRules,
-    pageObjectPattern: (raw['pageObjectPattern'] as string | undefined) ?? DEFAULT_CONFIG.pageObjectPattern,
+    pageObjectPattern:
+      (raw['pageObjectPattern'] as string | undefined) ?? DEFAULT_CONFIG.pageObjectPattern,
     specPattern: (raw['specPattern'] as string | undefined) ?? DEFAULT_CONFIG.specPattern,
-    categoryFilter: (raw['categoryFilter'] as string[] | undefined) ?? DEFAULT_CONFIG.categoryFilter,
+    categoryFilter:
+      (raw['categoryFilter'] as string[] | undefined) ?? DEFAULT_CONFIG.categoryFilter,
     failOn: (raw['failOn'] as 'error' | 'warn' | undefined) ?? DEFAULT_CONFIG.failOn,
-    maxWarnings: (raw['maxWarnings'] as number | undefined),
+    maxWarnings: raw['maxWarnings'] as number | undefined,
     overrides,
   };
 }

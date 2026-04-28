@@ -28,15 +28,10 @@ export const r07NoPagePause: RuleDefinition = {
 
       if (callee.getKind() !== SyntaxKind.PropertyAccessExpression) return;
 
-      const methodName = callee
-        .asKindOrThrow(SyntaxKind.PropertyAccessExpression)
-        .getName();
+      const methodName = callee.asKindOrThrow(SyntaxKind.PropertyAccessExpression).getName();
 
       if (methodName === 'pause') {
-        context.report(
-          callExpr,
-          'page.pause() halts test execution; remove before committing',
-        );
+        context.report(callExpr, 'page.pause() halts test execution; remove before committing');
       }
     });
   },

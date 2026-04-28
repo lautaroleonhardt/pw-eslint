@@ -61,24 +61,24 @@ pw-eslint . --compare baseline.json
 
 ## CLI Flags
 
-| Flag | Description | Default |
-|------|-------------|---------|
-| `[path]` | Path to analyze (file or directory) | `.` |
-| `--format <fmt>` | Output format: `pretty`, `json`, `junit`, `github` | `pretty` |
-| `--fix` | Apply auto-fixes in place | `false` |
-| `--dry-run` | Preview fixes as a unified diff | `false` |
-| `--rule <id...>` | Run only the specified rule(s) (repeatable) | all enabled rules |
-| `--category <name...>` | Run only rules in the specified category(s) (repeatable) | all categories |
-| `--severity <level>` | Filter output to `error` or `warn` | all |
-| `--quiet` | Show only `error` findings (same as `--severity error`) | `false` |
-| `--no-color` | Disable colored output | `false` |
-| `--config <path>` | Path to a specific config file | auto-discovered |
-| `--staged` | Analyze only git-staged files | `false` |
-| `--output-file <path>` | Write report to a file instead of stdout | stdout |
-| `--max-warnings <n>` | Exit 1 if warning count exceeds threshold | unlimited |
-| `--compare <path>` | Compare against a baseline JSON for regression detection | disabled |
-| `--init` | Generate `.pw-eslintrc.json` with all rules | — |
-| `--init-config <path>` | Custom path for generated config file | `.pw-eslintrc.json` |
+| Flag                   | Description                                              | Default             |
+| ---------------------- | -------------------------------------------------------- | ------------------- |
+| `[path]`               | Path to analyze (file or directory)                      | `.`                 |
+| `--format <fmt>`       | Output format: `pretty`, `json`, `junit`, `github`       | `pretty`            |
+| `--fix`                | Apply auto-fixes in place                                | `false`             |
+| `--dry-run`            | Preview fixes as a unified diff                          | `false`             |
+| `--rule <id...>`       | Run only the specified rule(s) (repeatable)              | all enabled rules   |
+| `--category <name...>` | Run only rules in the specified category(s) (repeatable) | all categories      |
+| `--severity <level>`   | Filter output to `error` or `warn`                       | all                 |
+| `--quiet`              | Show only `error` findings (same as `--severity error`)  | `false`             |
+| `--no-color`           | Disable colored output                                   | `false`             |
+| `--config <path>`      | Path to a specific config file                           | auto-discovered     |
+| `--staged`             | Analyze only git-staged files                            | `false`             |
+| `--output-file <path>` | Write report to a file instead of stdout                 | stdout              |
+| `--max-warnings <n>`   | Exit 1 if warning count exceeds threshold                | unlimited           |
+| `--compare <path>`     | Compare against a baseline JSON for regression detection | disabled            |
+| `--init`               | Generate `.pw-eslintrc.json` with all rules              | —                   |
+| `--init-config <path>` | Custom path for generated config file                    | `.pw-eslintrc.json` |
 
 ---
 
@@ -113,17 +113,17 @@ You can also generate a starter config with `pw-eslint --init`.
 
 ### Config Schema
 
-| Key | Type | Description |
-|-----|------|-------------|
-| `include` | `string[]` | Glob patterns for files to analyze |
-| `exclude` | `string[]` | Glob patterns for files to exclude |
-| `pageObjectPattern` | `string` | Glob for Page Object Model files |
-| `specPattern` | `string` | Glob for test spec files |
-| `rules` | `object` | Rule severities — `"error"`, `"warn"`, `"off"`, or `["warn", { options }]` |
-| `failOn` | `"error" \| "warn"` | Exit 1 when findings of this severity exist (default: `"error"`) |
-| `maxWarnings` | `number` | Max warnings before exit 1 (default: unlimited) |
-| `categoryFilter` | `string[]` | Run only rules in the specified categories |
-| `overrides` | `OverrideEntry[]` | Per-directory rule overrides (see below) |
+| Key                 | Type                | Description                                                                |
+| ------------------- | ------------------- | -------------------------------------------------------------------------- |
+| `include`           | `string[]`          | Glob patterns for files to analyze                                         |
+| `exclude`           | `string[]`          | Glob patterns for files to exclude                                         |
+| `pageObjectPattern` | `string`            | Glob for Page Object Model files                                           |
+| `specPattern`       | `string`            | Glob for test spec files                                                   |
+| `rules`             | `object`            | Rule severities — `"error"`, `"warn"`, `"off"`, or `["warn", { options }]` |
+| `failOn`            | `"error" \| "warn"` | Exit 1 when findings of this severity exist (default: `"error"`)           |
+| `maxWarnings`       | `number`            | Max warnings before exit 1 (default: unlimited)                            |
+| `categoryFilter`    | `string[]`          | Run only rules in the specified categories                                 |
+| `overrides`         | `OverrideEntry[]`   | Per-directory rule overrides (see below)                                   |
 
 ### Per-Directory Overrides
 
@@ -150,31 +150,31 @@ The first matching override wins. Unspecified rules inherit the global config.
 
 ## Built-in Rules
 
-| Rule ID | Default | Fixable | Category | Description |
-|---------|---------|---------|----------|-------------|
-| `no-hard-wait` | `error` | Yes | flakiness | Disallows `page.waitForTimeout()` and bare `setTimeout()` |
-| `deep-locator` | `warn` | No | flakiness | Flags locator chains deeper than `maxDepth` (default: 3) |
-| `unawaited-action` | `error` | No | flakiness | Flags Playwright actions called without `await` |
-| `zombie-locator` | `warn` | No | flakiness | Flags locators assigned but never used |
-| `web-first-assertion` | `error` | Yes | correctness | Enforces web-first assertions (`expect(locator).toBeVisible()`) over manual waits |
-| `leaky-page-object` | `warn` | No | hygiene | Flags Page Object methods that return raw Playwright types |
-| `no-page-pause` | `error` | Yes | hygiene | Flags `page.pause()` debug calls left in test code |
-| `no-focused-test` | `error` | Yes | style | Flags `test.only()` / `it.only()` / `describe.only()` |
-| `no-hardcoded-base-url` | `warn` | No | hygiene | Flags hardcoded `http://` / `https://` URLs in `page.goto()` |
-| `no-hardcoded-timeout` | `warn` | No | hygiene | Flags hardcoded timeout values (configurable `maxTimeout`) |
-| `no-console-in-test` | `warn` | No | hygiene | Flags `console.log/warn/error/debug/info` in spec files |
-| `no-skipped-test` | `warn` | Yes | style | Flags `test.skip()` and `test.fixme()` |
+| Rule ID                 | Default | Fixable | Category    | Description                                                                       |
+| ----------------------- | ------- | ------- | ----------- | --------------------------------------------------------------------------------- |
+| `no-hard-wait`          | `error` | Yes     | flakiness   | Disallows `page.waitForTimeout()` and bare `setTimeout()`                         |
+| `deep-locator`          | `warn`  | No      | flakiness   | Flags locator chains deeper than `maxDepth` (default: 3)                          |
+| `unawaited-action`      | `error` | No      | flakiness   | Flags Playwright actions called without `await`                                   |
+| `zombie-locator`        | `warn`  | No      | flakiness   | Flags locators assigned but never used                                            |
+| `web-first-assertion`   | `error` | Yes     | correctness | Enforces web-first assertions (`expect(locator).toBeVisible()`) over manual waits |
+| `leaky-page-object`     | `warn`  | No      | hygiene     | Flags Page Object methods that return raw Playwright types                        |
+| `no-page-pause`         | `error` | Yes     | hygiene     | Flags `page.pause()` debug calls left in test code                                |
+| `no-focused-test`       | `error` | Yes     | style       | Flags `test.only()` / `it.only()` / `describe.only()`                             |
+| `no-hardcoded-base-url` | `warn`  | No      | hygiene     | Flags hardcoded `http://` / `https://` URLs in `page.goto()`                      |
+| `no-hardcoded-timeout`  | `warn`  | No      | hygiene     | Flags hardcoded timeout values (configurable `maxTimeout`)                        |
+| `no-console-in-test`    | `warn`  | No      | hygiene     | Flags `console.log/warn/error/debug/info` in spec files                           |
+| `no-skipped-test`       | `warn`  | Yes     | style       | Flags `test.skip()` and `test.fixme()`                                            |
 
 ### Rule Categories
 
 Rules are grouped into four categories for filtering with `--category`:
 
-| Category | Rules | Purpose |
-|----------|-------|---------|
-| `flakiness` | `no-hard-wait`, `deep-locator`, `unawaited-action`, `zombie-locator` | Prevent flaky tests |
-| `correctness` | `web-first-assertion` | Enforce correct Playwright patterns |
-| `hygiene` | `leaky-page-object`, `no-page-pause`, `no-hardcoded-base-url`, `no-hardcoded-timeout`, `no-console-in-test` | Keep code clean |
-| `style` | `no-focused-test`, `no-skipped-test` | Enforce consistent style |
+| Category      | Rules                                                                                                       | Purpose                             |
+| ------------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| `flakiness`   | `no-hard-wait`, `deep-locator`, `unawaited-action`, `zombie-locator`                                        | Prevent flaky tests                 |
+| `correctness` | `web-first-assertion`                                                                                       | Enforce correct Playwright patterns |
+| `hygiene`     | `leaky-page-object`, `no-page-pause`, `no-hardcoded-base-url`, `no-hardcoded-timeout`, `no-console-in-test` | Keep code clean                     |
+| `style`       | `no-focused-test`, `no-skipped-test`                                                                        | Enforce consistent style            |
 
 ### Rule-Specific Options
 
@@ -189,10 +189,10 @@ Some rules accept configuration options:
 }
 ```
 
-| Rule | Option | Type | Default | Description |
-|------|--------|------|---------|-------------|
-| `deep-locator` | `maxDepth` | `number` | `3` | Maximum allowed locator chain depth |
-| `no-hardcoded-timeout` | `maxTimeout` | `number` | `0` | Only flag timeouts exceeding this value (0 = flag all) |
+| Rule                   | Option       | Type     | Default | Description                                            |
+| ---------------------- | ------------ | -------- | ------- | ------------------------------------------------------ |
+| `deep-locator`         | `maxDepth`   | `number` | `3`     | Maximum allowed locator chain depth                    |
+| `no-hardcoded-timeout` | `maxTimeout` | `number` | `0`     | Only flag timeouts exceeding this value (0 = flag all) |
 
 ---
 
@@ -200,13 +200,13 @@ Some rules accept configuration options:
 
 Five rules support automatic fixing:
 
-| Rule | Fix Action |
-|------|------------|
-| `no-hard-wait` | Replaces `page.waitForTimeout()` with a TODO comment |
+| Rule                  | Fix Action                                                                               |
+| --------------------- | ---------------------------------------------------------------------------------------- |
+| `no-hard-wait`        | Replaces `page.waitForTimeout()` with a TODO comment                                     |
 | `web-first-assertion` | Rewrites `expect(await loc.isVisible()).toBe(true)` to `await expect(loc).toBeVisible()` |
-| `no-page-pause` | Removes `page.pause()` statements |
-| `no-focused-test` | Removes `.only` modifier (`test.only()` -> `test()`) |
-| `no-skipped-test` | Removes `.skip` / `.fixme` modifier (`test.skip()` -> `test()`) |
+| `no-page-pause`       | Removes `page.pause()` statements                                                        |
+| `no-focused-test`     | Removes `.only` modifier (`test.only()` -> `test()`)                                     |
+| `no-skipped-test`     | Removes `.skip` / `.fixme` modifier (`test.skip()` -> `test()`)                          |
 
 ```bash
 # Apply fixes
@@ -250,6 +250,7 @@ pw-eslint explain --list
 ```
 
 The `explain` command shows:
+
 - Rule description and rationale
 - Code examples of violations
 - Fix guidance
@@ -314,6 +315,7 @@ pw-eslint . --compare baseline.json
 ```
 
 With `--compare`:
+
 - Exit 0 if no **new** violations were introduced
 - Exit 1 if **new** violations exist (regressions)
 - Fixed violations are reported but don't affect exit code
@@ -339,9 +341,7 @@ export default {
   defaultSeverity: 'warn',
   fixable: false,
   check(context) {
-    const calls = context.sourceFile.getDescendantsOfKind(
-      /* SyntaxKind.CallExpression */ 213
-    );
+    const calls = context.sourceFile.getDescendantsOfKind(/* SyntaxKind.CallExpression */ 213);
     for (const call of calls) {
       if (call.getExpression().getText() === 'console.log') {
         context.report(call, 'Avoid console.log in tests');
@@ -355,15 +355,15 @@ export default {
 
 ```typescript
 interface RuleDefinition {
-  apiVersion: 1;                          // must be exactly 1
-  id: string;                             // unique rule identifier
-  description: string;                    // human-readable description
-  defaultSeverity: 'error' | 'warn';     // default severity when enabled
-  fixable: boolean;                       // whether fix() is implemented
-  category?: string;                      // rule category for filtering
-  explain?: RuleExplainData;              // rationale, examples, fix guidance
-  check(context: RuleContext): void;      // analysis logic
-  fix?(context: FixContext): void;        // optional auto-fix logic
+  apiVersion: 1; // must be exactly 1
+  id: string; // unique rule identifier
+  description: string; // human-readable description
+  defaultSeverity: 'error' | 'warn'; // default severity when enabled
+  fixable: boolean; // whether fix() is implemented
+  category?: string; // rule category for filtering
+  explain?: RuleExplainData; // rationale, examples, fix guidance
+  check(context: RuleContext): void; // analysis logic
+  fix?(context: FixContext): void; // optional auto-fix logic
 }
 ```
 
@@ -371,9 +371,9 @@ interface RuleDefinition {
 
 ```typescript
 interface RuleContext {
-  sourceFile: SourceFile;               // ts-morph SourceFile
-  project: Project;                     // ts-morph Project
-  config: ResolvedConfig;               // resolved CLI config
+  sourceFile: SourceFile; // ts-morph SourceFile
+  project: Project; // ts-morph Project
+  config: ResolvedConfig; // resolved CLI config
   report(node: Node, message: string, suggestion?: string): void;
 }
 ```
@@ -398,11 +398,11 @@ The `apiVersion` field guards against breaking changes. The current supported ve
 
 ## Exit Codes
 
-| Code | Meaning |
-|------|---------|
-| `0` | Success — no violations matching `failOn` severity |
-| `1` | Analysis completed — violations found, `--max-warnings` exceeded, or regressions detected with `--compare` |
-| `2` | Configuration error, plugin load failure, file not found, or usage error |
+| Code | Meaning                                                                                                    |
+| ---- | ---------------------------------------------------------------------------------------------------------- |
+| `0`  | Success — no violations matching `failOn` severity                                                         |
+| `1`  | Analysis completed — violations found, `--max-warnings` exceeded, or regressions detected with `--compare` |
+| `2`  | Configuration error, plugin load failure, file not found, or usage error                                   |
 
 ---
 

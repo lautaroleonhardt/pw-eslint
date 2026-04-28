@@ -19,20 +19,20 @@ export function loadBaseline(filePath: string, fs: FileSystem = defaultFS): Find
     parsed = JSON.parse(text);
   } catch (err) {
     throw new BaselineLoadError(
-      `Failed to parse baseline file "${filePath}": ${err instanceof Error ? err.message : String(err)}`,
+      `Failed to parse baseline file "${filePath}": ${err instanceof Error ? err.message : String(err)}`
     );
   }
 
   if (!Array.isArray(parsed)) {
     throw new BaselineLoadError(
-      `Baseline file "${filePath}" must contain a JSON array of findings.`,
+      `Baseline file "${filePath}" must contain a JSON array of findings.`
     );
   }
 
   for (const item of parsed as unknown[]) {
     if (typeof item !== 'object' || item === null || Array.isArray(item)) {
       throw new BaselineLoadError(
-        `Baseline file "${filePath}" contains invalid entries — expected objects.`,
+        `Baseline file "${filePath}" contains invalid entries — expected objects.`
       );
     }
   }

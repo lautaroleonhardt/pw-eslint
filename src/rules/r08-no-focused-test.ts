@@ -45,7 +45,7 @@ export const r08NoFocusedTest: RuleDefinition = {
 
       context.report(
         callExpr,
-        'test.only() causes all other tests to be skipped in CI; remove the .only modifier',
+        'test.only() causes all other tests to be skipped in CI; remove the .only modifier'
       );
     });
   },

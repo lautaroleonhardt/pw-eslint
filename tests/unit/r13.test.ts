@@ -15,7 +15,7 @@ describe('R13: no-assertion-in-page-object', () => {
     const findings = runRuleOnFixture(
       r13NoAssertionInPageObject,
       `${fixtureDir}/r13-fires.ts`,
-      poConfig,
+      poConfig
     );
     expect(findings).toHaveLength(3);
     findings.forEach((f) => {
@@ -28,17 +28,15 @@ describe('R13: no-assertion-in-page-object', () => {
     const findings = runRuleOnFixture(
       r13NoAssertionInPageObject,
       `${fixtureDir}/r13-nofire.ts`,
-      poConfig,
+      poConfig
     );
     expect(findings).toHaveLength(0);
   });
 
   it('does not fire when file does not match pageObjectPattern (scope gate)', () => {
-    const findings = runRuleOnFixture(
-      r13NoAssertionInPageObject,
-      `${fixtureDir}/r13-fires.ts`,
-      { pageObjectPattern: 'pages/**/*.ts' },
-    );
+    const findings = runRuleOnFixture(r13NoAssertionInPageObject, `${fixtureDir}/r13-fires.ts`, {
+      pageObjectPattern: 'pages/**/*.ts',
+    });
     expect(findings).toHaveLength(0);
   });
 });

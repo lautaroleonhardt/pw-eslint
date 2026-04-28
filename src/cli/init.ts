@@ -26,13 +26,13 @@ function buildConfigTemplate(): string {
   const ruleLines = BUILT_IN_RULES.map((rule) => {
     const desc = RULE_DESCRIPTIONS[rule.id] ?? rule.description;
     const category = rule.category ?? 'uncategorized';
-    const defaultEntry = rule.id === 'deep-locator'
-      ? `["${rule.defaultSeverity}", { "maxDepth": 3 }]`
-      : `"${rule.defaultSeverity}"`;
-    return [
-      `    // ${rule.id} [${category}]: ${desc}`,
-      `    "${rule.id}": ${defaultEntry}`,
-    ].join('\n');
+    const defaultEntry =
+      rule.id === 'deep-locator'
+        ? `["${rule.defaultSeverity}", { "maxDepth": 3 }]`
+        : `"${rule.defaultSeverity}"`;
+    return [`    // ${rule.id} [${category}]: ${desc}`, `    "${rule.id}": ${defaultEntry}`].join(
+      '\n'
+    );
   }).join(',\n');
 
   return `{
@@ -83,7 +83,7 @@ export function runInit(options: InitOptions = {}): void {
 
   if (fs.exists(targetPath)) {
     process.stderr.write(
-      `[pw-eslint] Config already exists at "${targetPath}". No changes made.\n`,
+      `[pw-eslint] Config already exists at "${targetPath}". No changes made.\n`
     );
     process.exit(0);
   }
@@ -92,7 +92,7 @@ export function runInit(options: InitOptions = {}): void {
     fs.writeFile(targetPath, buildConfigTemplate());
   } catch (err) {
     process.stderr.write(
-      `[pw-eslint] Failed to write config to "${targetPath}": ${err instanceof Error ? err.message : String(err)}\n`,
+      `[pw-eslint] Failed to write config to "${targetPath}": ${err instanceof Error ? err.message : String(err)}\n`
     );
     process.exit(2);
     return;

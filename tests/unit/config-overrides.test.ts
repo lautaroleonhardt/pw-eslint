@@ -25,9 +25,7 @@ describe('config overrides validation', () => {
   it('accepts a valid overrides array', () => {
     const dir = tmpDir();
     writeConfig(dir, {
-      overrides: [
-        { files: ['tests/legacy/**'], rules: { 'no-hard-wait': 'off' } },
-      ],
+      overrides: [{ files: ['tests/legacy/**'], rules: { 'no-hard-wait': 'off' } }],
     });
     const config = loadConfig(dir);
     expect(config.overrides).toHaveLength(1);
@@ -38,9 +36,7 @@ describe('config overrides validation', () => {
   it('throws ConfigValidationError for invalid override severity', () => {
     const dir = tmpDir();
     writeConfig(dir, {
-      overrides: [
-        { files: ['tests/**'], rules: { 'no-hard-wait': 'invalid' } },
-      ],
+      overrides: [{ files: ['tests/**'], rules: { 'no-hard-wait': 'invalid' } }],
     });
     expect(() => loadConfig(dir)).toThrow(ConfigValidationError);
   });

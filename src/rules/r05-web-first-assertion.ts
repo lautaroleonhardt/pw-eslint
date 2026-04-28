@@ -2,15 +2,19 @@ import { SyntaxKind } from 'ts-morph';
 import type { RuleDefinition, FixContext } from '../domain/rule.js';
 
 const STATE_CHECK_METHODS = new Set([
-  'isVisible', 'isEnabled', 'isChecked', 'isDisabled', 'isEditable',
+  'isVisible',
+  'isEnabled',
+  'isChecked',
+  'isDisabled',
+  'isEditable',
 ]);
 
 const WEB_FIRST_MAP: Record<string, Record<string, string>> = {
-  isVisible:   { true: 'toBeVisible()',  false: 'not.toBeVisible()' },
-  isEnabled:   { true: 'toBeEnabled()',  false: 'not.toBeEnabled()' },
-  isChecked:   { true: 'toBeChecked()',  false: 'not.toBeChecked()' },
-  isDisabled:  { true: 'toBeDisabled()', false: 'not.toBeDisabled()' },
-  isEditable:  { true: 'toBeEditable()', false: 'not.toBeEditable()' },
+  isVisible: { true: 'toBeVisible()', false: 'not.toBeVisible()' },
+  isEnabled: { true: 'toBeEnabled()', false: 'not.toBeEnabled()' },
+  isChecked: { true: 'toBeChecked()', false: 'not.toBeChecked()' },
+  isDisabled: { true: 'toBeDisabled()', false: 'not.toBeDisabled()' },
+  isEditable: { true: 'toBeEditable()', false: 'not.toBeEditable()' },
 };
 
 export const r05WebFirstAssertion: RuleDefinition = {
@@ -23,7 +27,7 @@ export const r05WebFirstAssertion: RuleDefinition = {
   explain: {
     rationale:
       'Non-web-first assertions like expect(await locator.isVisible()).toBe(true) resolve the ' +
-      'locator state once and assert immediately, bypassing Playwright\'s auto-retry mechanism. ' +
+      "locator state once and assert immediately, bypassing Playwright's auto-retry mechanism. " +
       'Web-first assertions like expect(locator).toBeVisible() automatically retry until the ' +
       'condition is met or the timeout expires, making tests far more reliable.',
     examples: [
@@ -88,14 +92,10 @@ export const r05WebFirstAssertion: RuleDefinition = {
       if (awaitExpr.getKind() !== SyntaxKind.AwaitExpression) return;
 
       // Get the call inside await — must be locator.<stateCheck>()
-      const awaitedExpr = awaitExpr
-        .asKindOrThrow(SyntaxKind.AwaitExpression)
-        .getExpression();
+      const awaitedExpr = awaitExpr.asKindOrThrow(SyntaxKind.AwaitExpression).getExpression();
       if (awaitedExpr.getKind() !== SyntaxKind.CallExpression) return;
 
-      const innerCallee = awaitedExpr
-        .asKindOrThrow(SyntaxKind.CallExpression)
-        .getExpression();
+      const innerCallee = awaitedExpr.asKindOrThrow(SyntaxKind.CallExpression).getExpression();
       if (innerCallee.getKind() !== SyntaxKind.PropertyAccessExpression) return;
 
       const innerProp = innerCallee.asKindOrThrow(SyntaxKind.PropertyAccessExpression);
@@ -108,7 +108,7 @@ export const r05WebFirstAssertion: RuleDefinition = {
         context.report(
           outerCall,
           `Non-web-first assertion: \`expect(await ${locatorText}.${stateCheck}()).${assertionMethod}()\` cannot be auto-fixed (semantic ambiguity).`,
-          `Use \`await expect(${locatorText}).${WEB_FIRST_MAP[stateCheck]?.['true'] ?? stateCheck}()\` for reliable auto-retry.`,
+          `Use \`await expect(${locatorText}).${WEB_FIRST_MAP[stateCheck]?.['true'] ?? stateCheck}()\` for reliable auto-retry.`
         );
         return;
       }
@@ -119,7 +119,7 @@ export const r05WebFirstAssertion: RuleDefinition = {
       context.report(
         outerCall,
         `Non-web-first assertion: \`expect(await ${locatorText}.${stateCheck}()).${assertionMethod}(${boolKey})\`.`,
-        `Use \`await expect(${locatorText}).${matcher}\` instead.`,
+        `Use \`await expect(${locatorText}).${matcher}\` instead.`
       );
     });
   },
@@ -158,7 +158,7 @@ export const r05WebFirstAssertion: RuleDefinition = {
       const args = outerCall.getArguments();
       if (args.length !== 1) continue;
       const argKind = args[0]!.getKind();
-      let boolKey: 'true' | 'false' | null = null;
+      let boolKey: 'true' | 'false';
       if (argKind === SyntaxKind.TrueKeyword) boolKey = 'true';
       else if (argKind === SyntaxKind.FalseKeyword) boolKey = 'false';
       else continue;
@@ -175,14 +175,10 @@ export const r05WebFirstAssertion: RuleDefinition = {
       const awaitExpr = expectArgs[0]!;
       if (awaitExpr.getKind() !== SyntaxKind.AwaitExpression) continue;
 
-      const awaitedExpr = awaitExpr
-        .asKindOrThrow(SyntaxKind.AwaitExpression)
-        .getExpression();
+      const awaitedExpr = awaitExpr.asKindOrThrow(SyntaxKind.AwaitExpression).getExpression();
       if (awaitedExpr.getKind() !== SyntaxKind.CallExpression) continue;
 
-      const innerCallee = awaitedExpr
-        .asKindOrThrow(SyntaxKind.CallExpression)
-        .getExpression();
+      const innerCallee = awaitedExpr.asKindOrThrow(SyntaxKind.CallExpression).getExpression();
       if (innerCallee.getKind() !== SyntaxKind.PropertyAccessExpression) continue;
 
       const innerProp = innerCallee.asKindOrThrow(SyntaxKind.PropertyAccessExpression);

@@ -90,10 +90,13 @@ describe('category-based rule filtering', () => {
   });
 
   it('multiple categories combine as union', () => {
-    const findings = runWithRules(filterRulesByCategory(['flakiness', 'hygiene']), MULTI_VIOLATION_SOURCE);
+    const findings = runWithRules(
+      filterRulesByCategory(['flakiness', 'hygiene']),
+      MULTI_VIOLATION_SOURCE
+    );
     const ruleIds = new Set(findings.map((f) => f.ruleId));
-    expect(ruleIds.has('no-hard-wait')).toBe(true);    // flakiness
-    expect(ruleIds.has('no-page-pause')).toBe(true);   // hygiene
+    expect(ruleIds.has('no-hard-wait')).toBe(true); // flakiness
+    expect(ruleIds.has('no-page-pause')).toBe(true); // hygiene
     expect(ruleIds.has('no-focused-test')).toBe(false); // style — excluded
   });
 });

@@ -19,7 +19,8 @@ export const r14NoTestWithoutAssertion: RuleDefinition = {
     examples: [
       `// ❌ Always passes silently\ntest('checkout', async ({ page }) => {\n  await page.goto('/cart');\n});`,
     ],
-    fixGuidance: 'Add at least one expect() call that verifies an observable outcome of the action being tested.',
+    fixGuidance:
+      'Add at least one expect() call that verifies an observable outcome of the action being tested.',
   },
 
   check(context) {
@@ -41,40 +42,38 @@ export const r14NoTestWithoutAssertion: RuleDefinition = {
       if (!TEST_NAMES.has(callee.asKindOrThrow(SyntaxKind.Identifier).getText())) return;
 
       const args = callExpr.getArguments();
-      const callback = [...args].reverse().find(
-        (a) =>
-          a.getKind() === SyntaxKind.ArrowFunction ||
-          a.getKind() === SyntaxKind.FunctionExpression,
-      );
+      const callback = [...args]
+        .reverse()
+        .find(
+          (a) =>
+            a.getKind() === SyntaxKind.ArrowFunction ||
+            a.getKind() === SyntaxKind.FunctionExpression
+        );
 
       if (!callback) return;
 
-      const hasExpect = callback
-        .getDescendantsOfKind(SyntaxKind.CallExpression)
-        .some((ce) => {
-          const cCallee = ce.getExpression();
+      const hasExpect = callback.getDescendantsOfKind(SyntaxKind.CallExpression).some((ce) => {
+        const cCallee = ce.getExpression();
 
-          if (cCallee.getKind() === SyntaxKind.Identifier) {
-            return cCallee.asKindOrThrow(SyntaxKind.Identifier).getText() === 'expect';
-          }
+        if (cCallee.getKind() === SyntaxKind.Identifier) {
+          return cCallee.asKindOrThrow(SyntaxKind.Identifier).getText() === 'expect';
+        }
 
-          if (cCallee.getKind() === SyntaxKind.PropertyAccessExpression) {
-            const base = cCallee
-              .asKindOrThrow(SyntaxKind.PropertyAccessExpression)
-              .getExpression();
-            return (
-              base.getKind() === SyntaxKind.Identifier &&
-              base.asKindOrThrow(SyntaxKind.Identifier).getText() === 'expect'
-            );
-          }
+        if (cCallee.getKind() === SyntaxKind.PropertyAccessExpression) {
+          const base = cCallee.asKindOrThrow(SyntaxKind.PropertyAccessExpression).getExpression();
+          return (
+            base.getKind() === SyntaxKind.Identifier &&
+            base.asKindOrThrow(SyntaxKind.Identifier).getText() === 'expect'
+          );
+        }
 
-          return false;
-        });
+        return false;
+      });
 
       if (!hasExpect) {
         context.report(
           callExpr,
-          'Test has no assertion; add at least one expect() or it will always pass',
+          'Test has no assertion; add at least one expect() or it will always pass'
         );
       }
     });

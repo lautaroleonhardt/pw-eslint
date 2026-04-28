@@ -16,9 +16,7 @@ describe('runner: overrides apply per-file severity', () => {
 
   it('overrides severity to warn when file matches override pattern', () => {
     const findings = runRuleOnFixture(r01NoHardWait, firesFixture, {
-      overrides: [
-        { files: ['**/r01-fires.ts'], rules: { 'no-hard-wait': 'warn' } },
-      ],
+      overrides: [{ files: ['**/r01-fires.ts'], rules: { 'no-hard-wait': 'warn' } }],
     });
     expect(findings.length).toBeGreaterThan(0);
     findings.forEach((f) => expect(f.severity).toBe('warn'));
@@ -26,9 +24,7 @@ describe('runner: overrides apply per-file severity', () => {
 
   it('suppresses findings when override sets rule to off', () => {
     const findings = runRuleOnFixture(r01NoHardWait, firesFixture, {
-      overrides: [
-        { files: ['**/r01-fires.ts'], rules: { 'no-hard-wait': 'off' } },
-      ],
+      overrides: [{ files: ['**/r01-fires.ts'], rules: { 'no-hard-wait': 'off' } }],
     });
     expect(findings).toHaveLength(0);
   });

@@ -9,11 +9,10 @@ const specPath = `${fixtureDir}/login.spec.ts`;
 
 describe('R04: zombie-locator', () => {
   it('fires on Page Object properties never referenced in spec files', () => {
-    const findings = runRulesOnFixtures(
-      [r04ZombieLocator],
-      [pageObjPath, specPath],
-      { pageObjectPattern: `${fixtureDir}/*-page.ts`, specPattern: `${fixtureDir}/*.spec.ts` },
-    );
+    const findings = runRulesOnFixtures([r04ZombieLocator], [pageObjPath, specPath], {
+      pageObjectPattern: `${fixtureDir}/*-page.ts`,
+      specPattern: `${fixtureDir}/*.spec.ts`,
+    });
 
     const zombieIds = findings.map((f) => f.message);
     expect(findings.length).toBeGreaterThan(0);
@@ -24,11 +23,10 @@ describe('R04: zombie-locator', () => {
   });
 
   it('does not fire on properties referenced in spec files', () => {
-    const findings = runRulesOnFixtures(
-      [r04ZombieLocator],
-      [pageObjPath, specPath],
-      { pageObjectPattern: `${fixtureDir}/*-page.ts`, specPattern: `${fixtureDir}/*.spec.ts` },
-    );
+    const findings = runRulesOnFixtures([r04ZombieLocator], [pageObjPath, specPath], {
+      pageObjectPattern: `${fixtureDir}/*-page.ts`,
+      specPattern: `${fixtureDir}/*.spec.ts`,
+    });
 
     const zombieIds = findings.map((f) => f.message);
     // submitBtn IS referenced in spec
@@ -38,30 +36,27 @@ describe('R04: zombie-locator', () => {
   });
 
   it('reports warn severity by default', () => {
-    const findings = runRulesOnFixtures(
-      [r04ZombieLocator],
-      [pageObjPath, specPath],
-      { pageObjectPattern: `${fixtureDir}/*-page.ts`, specPattern: `${fixtureDir}/*.spec.ts` },
-    );
+    const findings = runRulesOnFixtures([r04ZombieLocator], [pageObjPath, specPath], {
+      pageObjectPattern: `${fixtureDir}/*-page.ts`,
+      specPattern: `${fixtureDir}/*.spec.ts`,
+    });
     expect(findings.every((f) => f.severity === 'warn')).toBe(true);
   });
 
   it('reports correct ruleId', () => {
-    const findings = runRulesOnFixtures(
-      [r04ZombieLocator],
-      [pageObjPath, specPath],
-      { pageObjectPattern: `${fixtureDir}/*-page.ts`, specPattern: `${fixtureDir}/*.spec.ts` },
-    );
+    const findings = runRulesOnFixtures([r04ZombieLocator], [pageObjPath, specPath], {
+      pageObjectPattern: `${fixtureDir}/*-page.ts`,
+      specPattern: `${fixtureDir}/*.spec.ts`,
+    });
     expect(findings.every((f) => f.ruleId === 'zombie-locator')).toBe(true);
   });
 
   it('does not fire on non-page-object files', () => {
     // specPattern matches only spec files; runner should skip spec file for zombie check
-    const findings = runRulesOnFixtures(
-      [r04ZombieLocator],
-      [specPath],
-      { pageObjectPattern: `${fixtureDir}/*-page.ts`, specPattern: `${fixtureDir}/*.spec.ts` },
-    );
+    const findings = runRulesOnFixtures([r04ZombieLocator], [specPath], {
+      pageObjectPattern: `${fixtureDir}/*-page.ts`,
+      specPattern: `${fixtureDir}/*.spec.ts`,
+    });
     expect(findings).toHaveLength(0);
   });
 });

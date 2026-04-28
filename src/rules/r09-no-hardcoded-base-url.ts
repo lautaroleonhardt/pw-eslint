@@ -14,7 +14,7 @@ export const r09NoHardcodedBaseUrl: RuleDefinition = {
     rationale:
       'Hardcoded base URLs in page.goto() tie tests to a specific environment (e.g., staging). ' +
       'They break when running against different environments (dev, prod) and prevent URL configuration ' +
-      'via Playwright\'s baseURL setting in playwright.config.ts.',
+      "via Playwright's baseURL setting in playwright.config.ts.",
     examples: [
       `// ❌ Hardcoded URL — only works in one environment\nawait page.goto('<YOUR_BASE_URL>/login');`,
       `// ✅ Relative path — works with any baseURL\nawait page.goto('/login');`,
@@ -53,7 +53,7 @@ export const r09NoHardcodedBaseUrl: RuleDefinition = {
       if (HARDCODED_URL_PATTERN.test(urlValue)) {
         context.report(
           firstArg,
-          `Hardcoded URL '${urlValue}' in page.goto(); use an environment variable or baseURL config instead`,
+          `Hardcoded URL '${urlValue}' in page.goto(); use an environment variable or baseURL config instead`
         );
       }
     });

@@ -18,7 +18,9 @@ describe('json formatter', () => {
   it('produces valid JSON', () => {
     const formatter = getFormatter('json');
     const output = formatter.format([sampleFinding]);
-    expect(() => JSON.parse(output)).not.toThrow();
+    expect(() => {
+      JSON.parse(output);
+    }).not.toThrow();
   });
 
   it('output is an array of findings', () => {
@@ -57,10 +59,14 @@ describe('json formatter', () => {
     };
 
     const output = formatter.format([], false, diff);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const parsed = JSON.parse(output);
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     expect(parsed.diff).toBeDefined();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     expect(parsed.diff.new).toHaveLength(1);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     expect(parsed.summary.current.errors).toBe(1);
   });
 });

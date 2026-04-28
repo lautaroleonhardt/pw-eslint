@@ -18,7 +18,8 @@ export const r13NoAssertionInPageObject: RuleDefinition = {
     examples: [
       `// ❌ Assertion in page object\nexport class LoginPage {\n  async assertVisible() {\n    await expect(this.submitBtn).toBeVisible(); // belongs in spec\n  }\n}`,
     ],
-    fixGuidance: 'Move expect() calls to the spec file. Page objects should return data or perform actions; specs should assert.',
+    fixGuidance:
+      'Move expect() calls to the spec file. Page objects should return data or perform actions; specs should assert.',
   },
 
   check(context) {
@@ -35,20 +36,18 @@ export const r13NoAssertionInPageObject: RuleDefinition = {
         if (callee.asKindOrThrow(SyntaxKind.Identifier).getText() === 'expect') {
           context.report(
             callExpr,
-            'expect() in page object violates SRP; move assertions to the spec file',
+            'expect() in page object violates SRP; move assertions to the spec file'
           );
         }
       } else if (callee.getKind() === SyntaxKind.PropertyAccessExpression) {
-        const base = callee
-          .asKindOrThrow(SyntaxKind.PropertyAccessExpression)
-          .getExpression();
+        const base = callee.asKindOrThrow(SyntaxKind.PropertyAccessExpression).getExpression();
         if (
           base.getKind() === SyntaxKind.Identifier &&
           base.asKindOrThrow(SyntaxKind.Identifier).getText() === 'expect'
         ) {
           context.report(
             callExpr,
-            'expect() in page object violates SRP; move assertions to the spec file',
+            'expect() in page object violates SRP; move assertions to the spec file'
           );
         }
       }

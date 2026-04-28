@@ -2,8 +2,8 @@
 import { test } from '@playwright/test';
 
 test('direct page usage', async ({ page }) => {
-  await page.goto('/');        // violation
+  await page.goto('/'); // violation
   await page.click('#submit'); // violation
   await page.fill('#name', 'Alice'); // violation
-  page.locator('#modal');      // violation
+  page.locator('#modal'); // violation
 });

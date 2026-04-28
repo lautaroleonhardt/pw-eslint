@@ -2,7 +2,10 @@ import { describe, it, expect } from 'vitest';
 import { runExplain } from '../../src/cli/explain.js';
 import { BUILT_IN_RULES } from '../../src/rules/index.js';
 
-function captureExplain(ruleId: string, color = false): {
+function captureExplain(
+  ruleId: string,
+  color = false
+): {
   stdout: string;
   stderr: string;
   exitCode: number;
@@ -13,11 +16,21 @@ function captureExplain(ruleId: string, color = false): {
 
   const origStdout = process.stdout.write.bind(process.stdout);
   const origStderr = process.stderr.write.bind(process.stderr);
+  // eslint-disable-next-line @typescript-eslint/unbound-method
   const origExit = process.exit;
 
-  (process.stdout.write as unknown) = (s: string) => { stdoutChunks.push(s); return true; };
-  (process.stderr.write as unknown) = (s: string) => { stderrChunks.push(s); return true; };
-  (process.exit as unknown) = (code?: number) => { exitCode = code ?? 0; throw new Error(`__exit_${code}`); };
+  (process.stdout.write as unknown) = (s: string) => {
+    stdoutChunks.push(s);
+    return true;
+  };
+  (process.stderr.write as unknown) = (s: string) => {
+    stderrChunks.push(s);
+    return true;
+  };
+  (process.exit as unknown) = (code?: number) => {
+    exitCode = code ?? 0;
+    throw new Error(`__exit_${code}`);
+  };
 
   try {
     runExplain(ruleId, BUILT_IN_RULES, { color });
@@ -70,6 +83,7 @@ describe('runExplain', () => {
   it('respects --no-color (no ANSI codes in output)', () => {
     const { stdout } = captureExplain('no-hard-wait', false);
     // No ANSI escape sequences
+    // eslint-disable-next-line no-control-regex
     expect(stdout).not.toMatch(/\x1b\[/);
   });
 });

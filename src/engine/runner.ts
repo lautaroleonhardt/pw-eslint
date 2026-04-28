@@ -52,7 +52,10 @@ function parseDisableComments(text: string): Map<number, Set<string>> {
   lines.forEach((line, idx) => {
     const m = pattern.exec(line);
     if (!m) return;
-    const ruleIds = m[1]!.split(',').map((s) => s.trim().toLowerCase()).filter(Boolean);
+    const ruleIds = m[1]!
+      .split(',')
+      .map((s) => s.trim().toLowerCase())
+      .filter(Boolean);
     // idx is 0-based. ts-morph getLineAndColumnAtPos returns 1-indexed line numbers,
     // and the runner stores findings as pos.line + 1. So the disable for the next line
     // must match: targetLine = (idx + 1) [next visual line, 1-indexed] + 1 [runner offset] + 1 [ts-morph 1-indexed] = idx + 3.
@@ -71,7 +74,7 @@ function parseDisableComments(text: string): Map<number, Set<string>> {
 function resolveEffectiveSeverity(
   filePath: string,
   ruleId: string,
-  config: ResolvedConfig,
+  config: ResolvedConfig
 ): Severity | 'off' | undefined {
   for (const override of config.overrides ?? []) {
     if (picomatch.isMatch(filePath, override.files)) {
@@ -82,14 +85,14 @@ function resolveEffectiveSeverity(
   }
   const entry = config.rules[ruleId];
   if (entry === undefined) return undefined;
-  return Array.isArray(entry) ? entry[0] : (entry as Severity | 'off');
+  return Array.isArray(entry) ? entry[0] : entry;
 }
 
 export class RuleRunner {
   constructor(
     private readonly rules: RuleDefinition[],
     private readonly config: ResolvedConfig,
-    private readonly fixMode: FixMode = 'none',
+    private readonly fixMode: FixMode = 'none'
   ) {}
 
   run(filePaths: string[], project: Project): RunResult {
@@ -99,12 +102,10 @@ export class RuleRunner {
     for (const filePath of filePaths) {
       let sourceFile: SourceFile;
       try {
-        sourceFile =
-          project.getSourceFile(filePath) ??
-          project.addSourceFileAtPath(filePath);
+        sourceFile = project.getSourceFile(filePath) ?? project.addSourceFileAtPath(filePath);
       } catch (err) {
         process.stderr.write(
-          `[pw-eslint] parse-error: could not load ${filePath}: ${err}\n`,
+          `[pw-eslint] parse-error: could not load ${filePath}: ${String(err)}\n`
         );
         continue;
       }
@@ -119,7 +120,7 @@ export class RuleRunner {
         for (const ruleId of ruleIds) {
           if (!knownRuleIds.has(ruleId)) {
             process.stderr.write(
-              `[pw-eslint] Unknown rule ID in disable comment: "${ruleId}" (in ${filePath})\n`,
+              `[pw-eslint] Unknown rule ID in disable comment: "${ruleId}" (in ${filePath})\n`
             );
           }
         }
@@ -165,14 +166,16 @@ export class RuleRunner {
           rule.check(context);
         } catch (err) {
           process.stderr.write(
-            `[pw-eslint] Rule ${rule.id} threw on ${filePath}: ${err}\n`,
+            `[pw-eslint] Rule ${rule.id} threw on ${filePath}: ${String(err)}\n`
           );
         }
 
         // Apply fixes if requested and rule supports it
         if (this.fixMode !== 'none' && rule.fixable && rule.fix) {
           // Sort findings by node position descending (right-to-left) to avoid offset drift
-          const sortedFindings = [...fileFindings].sort((a, b) => b.line - a.line || b.column - a.column);
+          const sortedFindings = [...fileFindings].sort(
+            (a, b) => b.line - a.line || b.column - a.column
+          );
 
           for (const finding of sortedFindings) {
             // Re-locate the node at the recorded position; use line/col as proxy key
@@ -194,7 +197,7 @@ export class RuleRunner {
               finding.fixStatus = 'fixed';
             } catch (err) {
               process.stderr.write(
-                `[pw-eslint] Fix for ${rule.id} failed on ${filePath}: ${err}\n`,
+                `[pw-eslint] Fix for ${rule.id} failed on ${filePath}: ${String(err)}\n`
               );
               finding.fixStatus = 'fix-skipped';
             }

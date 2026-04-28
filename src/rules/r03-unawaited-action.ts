@@ -3,19 +3,52 @@ import type { RuleDefinition } from '../domain/rule.js';
 
 const ASYNC_METHODS = new Set([
   // Navigation
-  'goto', 'reload', 'goBack', 'goForward', 'waitForURL', 'waitForNavigation',
+  'goto',
+  'reload',
+  'goBack',
+  'goForward',
+  'waitForURL',
+  'waitForNavigation',
   // Interaction
-  'click', 'dblclick', 'tap', 'fill', 'type', 'press', 'selectOption',
-  'check', 'uncheck', 'focus', 'blur', 'hover', 'dragTo', 'dispatchEvent',
-  'inputValue', 'selectText',
+  'click',
+  'dblclick',
+  'tap',
+  'fill',
+  'type',
+  'press',
+  'selectOption',
+  'check',
+  'uncheck',
+  'focus',
+  'blur',
+  'hover',
+  'dragTo',
+  'dispatchEvent',
+  'inputValue',
+  'selectText',
   // Waiting
-  'waitForSelector', 'waitForFunction', 'waitForEvent', 'waitForLoadState',
+  'waitForSelector',
+  'waitForFunction',
+  'waitForEvent',
+  'waitForLoadState',
   // State checks
-  'isVisible', 'isEnabled', 'isChecked', 'isDisabled', 'isEditable',
+  'isVisible',
+  'isEnabled',
+  'isChecked',
+  'isDisabled',
+  'isEditable',
   // Content
-  'innerHTML', 'innerText', 'textContent', 'getAttribute', 'count', 'boundingBox',
+  'innerHTML',
+  'innerText',
+  'textContent',
+  'getAttribute',
+  'count',
+  'boundingBox',
   // Other
-  'screenshot', 'setInputFiles', 'evaluate', 'evaluateHandle',
+  'screenshot',
+  'setInputFiles',
+  'evaluate',
+  'evaluateHandle',
 ]);
 
 const STATEMENT_KINDS = new Set([
@@ -45,10 +78,7 @@ function isInsidePromiseAll(callExpr: Node): boolean {
   const grandparent = parent.getParent();
   if (!grandparent || grandparent.getKind() !== SyntaxKind.CallExpression) return false;
 
-  const gpCallee = grandparent
-    .asKindOrThrow(SyntaxKind.CallExpression)
-    .getExpression()
-    .getText();
+  const gpCallee = grandparent.asKindOrThrow(SyntaxKind.CallExpression).getExpression().getText();
 
   return gpCallee === 'Promise.all' || gpCallee === 'Promise.allSettled';
 }
@@ -97,9 +127,7 @@ export const r03UnawaitedAction: RuleDefinition = {
       const callee = callExpr.getExpression();
       if (callee.getKind() !== SyntaxKind.PropertyAccessExpression) return;
 
-      const methodName = callee
-        .asKindOrThrow(SyntaxKind.PropertyAccessExpression)
-        .getName();
+      const methodName = callee.asKindOrThrow(SyntaxKind.PropertyAccessExpression).getName();
       if (!ASYNC_METHODS.has(methodName)) return;
 
       if (isInsidePromiseAll(callExpr)) return;
@@ -108,7 +136,7 @@ export const r03UnawaitedAction: RuleDefinition = {
       context.report(
         callExpr,
         `\`${methodName}()\` is async but called without \`await\`.`,
-        `Add 'await' before the call to ensure it completes before continuing.`,
+        `Add 'await' before the call to ensure it completes before continuing.`
       );
     });
   },

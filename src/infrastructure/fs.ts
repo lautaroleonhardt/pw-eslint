@@ -1,4 +1,14 @@
-import { existsSync, readFileSync, writeFileSync, mkdirSync, statSync, readdirSync, lstatSync, realpathSync, type Stats } from 'node:fs';
+import {
+  existsSync,
+  readFileSync,
+  writeFileSync,
+  mkdirSync,
+  statSync,
+  readdirSync,
+  lstatSync,
+  realpathSync,
+  type Stats,
+} from 'node:fs';
 
 /**
  * Abstract interface for filesystem operations.

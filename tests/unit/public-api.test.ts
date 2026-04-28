@@ -44,12 +44,25 @@ describe('public API exports', () => {
   });
 
   it('BUILT_IN_RULES contains all expected rule IDs', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
     const ruleIds = api.BUILT_IN_RULES.map((r: any) => r.id);
-    expect(ruleIds).toEqual(expect.arrayContaining([
-      'no-hard-wait', 'deep-locator', 'unawaited-action', 'zombie-locator',
-      'web-first-assertion', 'leaky-page-object', 'no-page-pause', 'no-focused-test',
-      'no-hardcoded-base-url', 'no-hardcoded-timeout', 'no-console-in-test', 'no-skipped-test',
-      'no-assertion-in-page-object', 'no-test-without-assertion',
-    ]));
+    expect(ruleIds).toEqual(
+      expect.arrayContaining([
+        'no-hard-wait',
+        'deep-locator',
+        'unawaited-action',
+        'zombie-locator',
+        'web-first-assertion',
+        'leaky-page-object',
+        'no-page-pause',
+        'no-focused-test',
+        'no-hardcoded-base-url',
+        'no-hardcoded-timeout',
+        'no-console-in-test',
+        'no-skipped-test',
+        'no-assertion-in-page-object',
+        'no-test-without-assertion',
+      ])
+    );
   });
 });
