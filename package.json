@@ -1,6 +1,6 @@
 {
   "name": "pw-eslint",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "AST-based static analysis CLI for Playwright test files",
   "license": "MIT",
   "type": "module",
@@ -19,7 +19,8 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "socket.yml"
   ],
   "scripts": {
     "prepare": "husky",
