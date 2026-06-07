@@ -1,11 +1,11 @@
 {
   "name": "pw-eslint",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "AST-based static analysis CLI for Playwright test files",
   "license": "MIT",
   "type": "module",
   "engines": {
-    "node": ">=22"
+    "node": ">=22.12.0"
   },
   "bin": {
     "pw-eslint": "dist/cli/index.js"
@@ -47,25 +47,25 @@
   },
   "dependencies": {
     "chalk": "^5.3.0",
-    "commander": "^12.1.0",
+    "commander": "^15.0.0",
     "picomatch": "^4.0.0",
     "tinyglobby": "^0.2.0",
     "ts-morph": "^28.0.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.5.2",
-    "@commitlint/config-conventional": "^20.5.0",
-    "@eslint/js": "^10.0.1",
-    "@types/node": "^24.0.0",
-    "@types/picomatch": "^3.0.0",
-    "eslint": "^10.2.1",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.4.0",
-    "prettier": "^3.8.3",
-    "tsup": "^8.0.0",
-    "typescript": "^5.4.0",
-    "typescript-eslint": "^8.59.1",
-    "vitest": "^4.1.5"
+    "@commitlint/cli": "20.5.2",
+    "@commitlint/config-conventional": "20.5.0",
+    "@eslint/js": "10.0.1",
+    "@types/node": "24.0.0",
+    "@types/picomatch": "3.0.0",
+    "eslint": "10.2.1",
+    "husky": "9.1.7",
+    "lint-staged": "16.4.0",
+    "prettier": "3.8.3",
+    "tsup": "8.0.0",
+    "typescript": "5.4.0",
+    "typescript-eslint": "8.59.1",
+    "vitest": "4.1.5"
   },
   "overrides": {
     "picomatch": "^4.0.0",
